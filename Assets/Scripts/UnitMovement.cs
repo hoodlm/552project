@@ -19,6 +19,11 @@ public class UnitMovement : MonoBehaviour {
 	private bool HasTarget;
 	
 	/// <summary>
+	/// How close a unit must be to a waypoint to consider it complete.
+	/// </summary>
+	private static float DistanceThreshold = 0.2f;
+	
+	/// <summary>
 	/// The controller that sent the most recent move order.
 	/// </summary>
 	private GameObject MoveController;
@@ -35,7 +40,7 @@ public class UnitMovement : MonoBehaviour {
 			if (HasReachedWaypoint(Target)) {
 				MoveController.SendMessage("UnitFinishedMovement");
 				HasTarget = false;
-				rigidbody.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePosition;
+				rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
 			}
 		}
 	}
@@ -71,6 +76,6 @@ public class UnitMovement : MonoBehaviour {
 	/// </summary>
 	private bool HasReachedWaypoint(Vector3 waypoint) {
 		float distance = Vector3.Distance(waypoint, transform.position);
-		return (distance < 0.5f);
+		return (distance < DistanceThreshold);
 	}
 }

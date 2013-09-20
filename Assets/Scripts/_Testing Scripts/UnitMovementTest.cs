@@ -9,10 +9,11 @@ public class UnitMovementTest : MonoBehaviour {
 	public GameObject TestUnit;
 	
 	private Vector3 Target;
+	private GameObject Ground;
 	
 	// Use this for initialization
 	void Start () {
-	
+		Ground = GameObject.FindWithTag("Ground");
 	}
 	
 	// Update is called once per frame
@@ -29,13 +30,19 @@ public class UnitMovementTest : MonoBehaviour {
 	}
 	
 	private void TestUnitMovement () {
-		// Our target position will be directly below the camera, so eliminate y component.
+		// Our target position will be directly below the camera, but we need the y coordinate to match the terrain relief.
 		Target = transform.position;
-		Target.y = 0f;
+		Target.y = GetHeightOfTerrain();
 			
 		string debugString = string.Format("Target position: {0},{1},{2}", Target.x, Target.y, Target.z);
 		print(debugString);
 		
 		TestUnit.GetComponent<UnitMovement>().GiveWalkingTarget(Target, this.gameObject);
+	}
+	
+	private float GetHeightOfTerrain() {
+		RaycastHit hit = new RaycastHit();
+		Ground.collider.Raycast(new Ray(transform.position, Vector3.down), out hit, float.PositiveInfinity);
+		return hit.point.y;
 	}
 }
