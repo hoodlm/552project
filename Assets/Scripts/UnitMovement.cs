@@ -4,6 +4,7 @@ using System.Collections;
 /// <summary>
 /// A Unit is any soldier, monster, or other agent that moves around the battlefield.
 /// Units do not move autonomously - they must be given a target point by a controller (e.g. the player or an AI).
+/// WARNING: Make sure that Units have a capsule collider, not a mesh collider or cube collider.
 /// </summary>
 public class UnitMovement : MonoBehaviour {
 	
