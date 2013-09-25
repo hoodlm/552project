@@ -18,13 +18,13 @@ public class UnitMovementTestController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Space)) {
+		if (Input.GetButtonDown ("Fire1")) {
 			TestUnitMovement();
 		}
 	}
 	
 	void OnGUI() {
-		GUI.Label(new Rect(0,0,200,100), "Press space to move the \n cube toward the camera.");
+		GUI.Label(new Rect(0,0,200,100), "Left click to move the \n cube to the target position.");
 	}
 	
 	public void UnitFinishedMovement () {
@@ -34,9 +34,7 @@ public class UnitMovementTestController : MonoBehaviour {
 	}
 	
 	private void TestUnitMovement () {
-		// Our target position will be directly below the camera, but we need the y coordinate to match the terrain relief.
-		Target = transform.position;
-		Target.y = GetHeightOfTerrain();
+		Target = GetPositionOnTerrain();
 			
 		string debugString = string.Format("Target position: {0},{1},{2}", Target.x, Target.y, Target.z);
 		print(debugString);
@@ -44,9 +42,10 @@ public class UnitMovementTestController : MonoBehaviour {
 		TestUnit.GetComponent<UnitMovement>().GiveWalkingTarget(Target, this.gameObject);
 	}
 	
-	private float GetHeightOfTerrain() {
+	private Vector3 GetPositionOnTerrain() {
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit = new RaycastHit();
-		Ground.collider.Raycast(new Ray(transform.position, Vector3.down), out hit, float.PositiveInfinity);
-		return hit.point.y;
+		Ground.collider.Raycast(ray, out hit, float.PositiveInfinity);
+		return hit.point;
 	}
 }
