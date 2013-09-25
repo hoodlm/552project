@@ -23,6 +23,10 @@ public class UnitMovementTest : MonoBehaviour {
 		}
 	}
 	
+	void OnGUI() {
+		GUI.Label(new Rect(0,0,200,100), "Press space to move the \n cube toward the camera.");
+	}
+	
 	public void UnitFinishedMovement () {
 		float distance = Vector3.Distance(Target, TestUnit.transform.position);
 		string debugString = string.Format("Unit's distance from target point: {0}", distance);
