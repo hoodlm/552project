@@ -6,7 +6,7 @@ using System.Collections;
 /// The Unit will notify its Controller when it needs orders, and the Controller
 /// then sends orders to the Unit.
 /// </summary>
-public abstract class Controller : MonoBehaviour {
+public abstract class AbstractController : MonoBehaviour {
 	
 	/// <summary>
 	/// Whether this controller is currently giving actions.
@@ -24,12 +24,14 @@ public abstract class Controller : MonoBehaviour {
 	public void TakeControlOf(GameObject unit) {
 		Active = true;
 		CurrentUnit = unit;
+		CurrentUnit.SendMessage("StartTurn",this);
 	}
 	
 	/// <summary>
 	/// Requests that this controller release control of its unit and switch to an Inactive state.
 	/// </summary>
 	public void GiveUpControl() {
+		CurrentUnit.SendMessage("FinishTurn",this);
 		CurrentUnit = null;
 		Active = false;
 	}
