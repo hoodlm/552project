@@ -11,13 +11,18 @@ public class UnitMovement : MonoBehaviour {
 	/// <summary>
 	/// The speed at which this unit will walk to a target point.
 	/// </summary>
-	public float WalkingSpeed = 10f;
+	public float walkingSpeed = 10f;
+	
+	/// <summary>
+	/// The original location of this unit at the time that it receives a move order.
+	/// </summary>
+	private Vector3 origin;
 	
 	/// <summary>
 	/// The walking target for this unit.
 	/// </summary>
-	private Vector3 Target;
-	private bool HasTarget;
+	private Vector3 target;
+	private bool hasTarget;
 	
 	/// <summary>
 	/// How close a unit must be to a waypoint to consider it complete.
@@ -27,27 +32,33 @@ public class UnitMovement : MonoBehaviour {
 	/// <summary>
 	/// The controller that sent the most recent move order.
 	/// </summary>
-	private GameObject MoveController;
+	private GameObject controller;
 	
 	// Use this for initialization
 	void Start () {
-		HasTarget = false;
+		hasTarget = false;
+		origin = transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (HasTarget) {
-			MoveTowardsWaypoint(Target);
-			if (HasReachedWaypoint(Target)) {
-				MoveController.SendMessage("UnitFinishedMovement");
-				HasTarget = false;
-				rigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+		if (hasTarget) {
+			MoveTowardsWaypoint(target);
+			if (HasReachedWaypoint(target)) {
+				float distanceTravelled = Vector3.Distance(origin, transform.position);
+				Debug.Log(this.name + " has reached its move target.");
+				controller.SendMessage("UnitFinishedMoveOrder", distanceTravelled);
+				hasTarget = false;
+				rigidbody.constraints = 
+					RigidbodyConstraints.FreezePosition |
+					RigidbodyConstraints.FreezeRotation;
 			}
 		}
 	}
 	
 	/// <summary>
-	/// Requests that this unit move toward the target point. The unit will get as close to this point as possible.
+	/// Requests that this unit move toward the target point. The unit will ignore incoming requests until
+	/// it is done moving.
 	/// </summary>
 	/// <param name='target'>
 	/// The target point, in world coordinates.
@@ -56,11 +67,14 @@ public class UnitMovement : MonoBehaviour {
 	/// The controller object that is sending the movement request.
 	/// </param>
 	public void GiveWalkingTarget(Vector3 target, GameObject controller) {
-		this.Target = target;
-		this.HasTarget = true;
-		this.MoveController = controller;
-		transform.LookAt(target);
-		rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+		if (!hasTarget) {
+			this.target = target;
+			this.hasTarget = true;
+			this.controller = controller;
+			this.origin = transform.position;
+			transform.LookAt(target);
+			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+		}
 	}
 	
 	/// <summary>
@@ -68,7 +82,7 @@ public class UnitMovement : MonoBehaviour {
 	/// </summary>
 	private void MoveTowardsWaypoint(Vector3 waypoint) {
 		Vector3 trajectory = (waypoint - transform.position).normalized;
-		trajectory *= WalkingSpeed * Time.deltaTime;
+		trajectory *= walkingSpeed * Time.deltaTime;
 		transform.Translate(trajectory, Space.World);
 	}
 	

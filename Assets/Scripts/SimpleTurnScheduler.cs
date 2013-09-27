@@ -7,14 +7,14 @@ using System.Collections.Generic;
 /// </summary>
 public class SimpleTurnScheduler : MonoBehaviour {
 	
-	public List<GameObject> Units;
+	public List<GameObject> units;
 	
-	private int TurnCounter;
+	private int turnCounter;
 	
 	// Use this for initialization
 	void Start () {
 		// Initialize TurnCounter at -1 so that Unit 0 goes first.
-		TurnCounter = -1;
+		turnCounter = -1;
 		NextTurn();
 	}
 	
@@ -27,15 +27,18 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	/// Whose turn is it anyway?
 	/// </summary>
 	public GameObject WhoseTurn() {
-		return Units[TurnCounter];
+		return units[turnCounter];
 	}
 	
 	/// <summary>
 	/// Ends the current Unit's turn and notifies the next Unit that it is his turn.
 	/// </summary>
-	public void NextTurn() {
-		Debug.Log(this.name + " is advancing the TurnCounter from " + TurnCounter);
-		TurnCounter = (TurnCounter + 1) % Units.Count;
-		Units[TurnCounter].GetComponent<UnitTurnTest>().StartTurn(gameObject);
+	public virtual void NextTurn() {
+		if (turnCounter != -1) {
+			WhoseTurn().SendMessage("FinishTurn", SendMessageOptions.RequireReceiver);
+		}
+		Debug.Log(this.name + " is advancing the TurnCounter from " + turnCounter);
+		turnCounter = (turnCounter + 1) % units.Count;
+		units[turnCounter].SendMessage("BeginTurn", this.gameObject);
 	}
 }

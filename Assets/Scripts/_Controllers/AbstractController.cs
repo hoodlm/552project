@@ -11,40 +11,60 @@ public abstract class AbstractController : MonoBehaviour {
 	/// <summary>
 	/// Whether this controller is currently giving actions.
 	/// </summary>
-	protected bool Active;
+	protected bool inAction;
 	
 	/// <summary>
 	/// The unit currently receiving actions from this controller.
 	/// </summary>
-	protected GameObject CurrentUnit;
+	protected GameObject currentUnit;
+	
+	/// <summary>
+	/// The ground or terrain of this level.
+	/// </summary>
+	protected GameObject ground;
+	
+	void Start () {
+		ground = GameObject.FindWithTag("Ground");
+	}
 	
 	/// <summary>
 	/// Asks the controller to take control of a unit and switch to an Active state.
 	/// </summary>
 	public void TakeControlOf(GameObject unit) {
-		Active = true;
-		CurrentUnit = unit;
-		CurrentUnit.SendMessage("StartTurn",this);
+		if (!inAction) {
+			Debug.Log(this.name + " is taking control of " + unit.name);
+			inAction = true;
+			currentUnit = unit;
+			currentUnit.SendMessage("BeginTurn", this.gameObject, SendMessageOptions.RequireReceiver);
+		}
 	}
 	
 	/// <summary>
 	/// Requests that this controller release control of its unit and switch to an Inactive state.
 	/// </summary>
 	public void GiveUpControl() {
-		CurrentUnit.SendMessage("FinishTurn",this);
-		CurrentUnit = null;
-		Active = false;
+		if (inAction) {
+			Debug.Log(this.name + " is giving up control of " + currentUnit.name);
+			currentUnit.SendMessage("FinishTurn", SendMessageOptions.RequireReceiver);
+			currentUnit = null;
+			inAction = false;
+		}
 	}
 	
 	/// <summary>
-	/// Whether this controller is active.
+	/// Whether this controller is active - i.e. if it is controlling the active unit.
 	/// </summary>
-	public bool IsActive() {
-		return this.Active;
+	public bool IsInAction() {
+		return this.inAction;
 	}
 	
 	/// <summary>
 	/// Moves the unit that this controller is currently controlling.
 	/// </summary>
-	protected abstract void MoveUnit();
+	protected abstract void SendMoveOrderToUnit();
+	
+	/// <summary>
+	/// Notify this controller than the current unit has finished its current move order.
+	/// </summary>
+	protected abstract void UnitFinishedMoveOrder(float distanceMoved);
 }
