@@ -14,6 +14,11 @@ public class UnitMovement : MonoBehaviour {
 	public float walkingSpeed = 10f;
 	
 	/// <summary>
+	/// The range that this unit can move in a single turn.
+	/// </summary>
+	public float walkingRange = 10f;
+	
+	/// <summary>
 	/// The original location of this unit at the time that it receives a move order.
 	/// </summary>
 	private Vector3 origin;
@@ -25,14 +30,14 @@ public class UnitMovement : MonoBehaviour {
 	private bool hasTarget;
 	
 	/// <summary>
+	/// The most recently received moveRequest.
+	/// </summary>
+	private UnitMoveRequest moveRequest;
+	
+	/// <summary>
 	/// How close a unit must be to a waypoint to consider it complete.
 	/// </summary>
 	private static readonly float DISTANCE_THRESHOLD = 0.2f;
-	
-	/// <summary>
-	/// The controller that sent the most recent move order.
-	/// </summary>
-	private GameObject controller;
 	
 	// Use this for initialization
 	void Start () {
@@ -49,14 +54,13 @@ public class UnitMovement : MonoBehaviour {
 		if (hasTarget) {
 			MoveTowardsWaypoint(target);
 			if (HasReachedWaypoint(target)) {
-				float distanceTravelled = Vector3.Distance(origin, transform.position);
 				Debug.Log(this.name + " has reached its move target.");
-				controller.SendMessage("UnitFinishedMoveOrder", distanceTravelled);
 				hasTarget = false;
 				rigidbody.constraints = 
 					RigidbodyConstraints.FreezePositionX |
 					RigidbodyConstraints.FreezePositionZ |
 					RigidbodyConstraints.FreezeRotation;
+				BroadcastMessage("DoneMoving", SuccessfulResponse(), SendMessageOptions.RequireReceiver);
 			}
 		}
 	}
@@ -71,15 +75,28 @@ public class UnitMovement : MonoBehaviour {
 	/// <param name='controller'>
 	/// The controller object that is sending the movement request.
 	/// </param>
-	public void GiveWalkingTarget(Vector3 target, GameObject controller) {
+	public void Move(UnitMoveRequest request) {
 		if (!hasTarget) {
-			this.target = target;
-			this.hasTarget = true;
-			this.controller = controller;
+			this.target = request.targetPosition;
 			this.origin = transform.position;
-			transform.LookAt(target);
-			rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+			this.moveRequest = request;
+			if (!WithinRange(target)) {
+				BroadcastMessage("DoneMoving", OutOfRangeResponse(), SendMessageOptions.RequireReceiver);
+			} else {
+				this.hasTarget = true;
+				transform.LookAt(target);
+				rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+			}
 		}
+	}
+	
+	/// <summary>
+	/// Is the test position within the movement range of this unit?
+	/// </summary>
+	private bool WithinRange(Vector3 testPosition) {
+		// We compare based on squared distance for performance reasons
+		float distanceSquared = (this.transform.position - testPosition).sqrMagnitude;
+		return (distanceSquared <= this.walkingRange * this.walkingRange);
 	}
 	
 	/// <summary>
@@ -97,5 +114,26 @@ public class UnitMovement : MonoBehaviour {
 	private bool HasReachedWaypoint(Vector3 waypoint) {
 		float distance = Vector3.Distance(waypoint, transform.position);
 		return (distance < DISTANCE_THRESHOLD);
+	}
+	
+	/// <summary>
+	/// Factory method to build a move response for an out of range position.
+	/// </summary>
+	/// <param name='request'>
+	/// The original move request object.
+	/// </param>
+	private UnitMoveResponse OutOfRangeResponse() {
+		return new UnitMoveResponse(this.moveRequest.caller, this.transform.position, 0f, false, "Out of range");
+	}
+	
+	/// <summary>
+	/// Factory method to build a move response for a successfully executed move.
+	/// </summary>
+	/// <param name='request'>
+	/// The original move request object.
+	/// </param>
+	private UnitMoveResponse SuccessfulResponse() {
+		float distance = (this.transform.position - this.origin).magnitude;
+		return new UnitMoveResponse(this.moveRequest.caller, this.transform.position, distance);
 	}
 }

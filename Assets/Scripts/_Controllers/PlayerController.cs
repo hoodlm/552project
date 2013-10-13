@@ -5,6 +5,7 @@ public class PlayerController : AbstractController {
 	
 	// Use this for initialization
 	void Start () {
+		scheduler = GameObject.FindGameObjectWithTag("BattleManager");
 		ground = GameObject.FindWithTag("Ground");
 	}
 	
@@ -15,6 +16,9 @@ public class PlayerController : AbstractController {
 		}
 	}
 	
+	/// <summary>
+	/// Moves the unit that this controller is currently controlling.
+	/// </summary>
 	override protected void SendMoveOrderToUnit() {
 		Vector3 target = GetCursorPositionOnTerrain();
 			
@@ -22,17 +26,27 @@ public class PlayerController : AbstractController {
 			string.Format("Target move position: {0},{1},{2}", target.x, target.y, target.z);
 		Debug.Log(debugString);
 		
+		UnitMoveRequest request = new UnitMoveRequest(this.gameObject, target);
+		
 		Debug.Log("Sending move order to " + currentUnit.name);
-		currentUnit.GetComponent<UnitMovement>().GiveWalkingTarget(target, gameObject);
+		currentUnit.SendMessage("RequestMove", request, SendMessageOptions.RequireReceiver);
 	}
 	
-	override protected void UnitFinishedMoveOrder(float distanceMoved) {
+	/// <summary>
+	/// Notify this controller than the current unit has finished its current move order.
+	/// </summary>
+	override protected void UnitDoneMoving(UnitMoveResponse response) {
 		string debugString = 
 			string.Format ("{0} received a report that {1} finished moving.", this.name, currentUnit.name);
 		Debug.Log(debugString);
-		currentUnit.SendMessage("FinishTurn", SendMessageOptions.RequireReceiver);
+		this.GiveUpControl();
+		scheduler.SendMessage("NextTurn", SendMessageOptions.RequireReceiver);
 	}
 	
+	/// <summary>
+	/// Helper method to retrieve the cursor position on terrain.
+	/// </summary>
+	/// <returns>
 	private Vector3 GetCursorPositionOnTerrain() {
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit = new RaycastHit();

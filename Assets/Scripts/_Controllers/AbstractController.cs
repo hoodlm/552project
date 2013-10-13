@@ -8,6 +8,8 @@ using System.Collections;
 /// </summary>
 public abstract class AbstractController : MonoBehaviour {
 	
+	protected GameObject scheduler;
+	
 	/// <summary>
 	/// Whether this controller is currently giving actions.
 	/// </summary>
@@ -24,6 +26,7 @@ public abstract class AbstractController : MonoBehaviour {
 	protected GameObject ground;
 	
 	void Start () {
+		scheduler = GameObject.FindGameObjectWithTag("BattleManager");
 		ground = GameObject.FindWithTag("Ground");
 	}
 	
@@ -45,7 +48,7 @@ public abstract class AbstractController : MonoBehaviour {
 	public void GiveUpControl() {
 		if (inAction) {
 			Debug.Log(this.name + " is giving up control of " + currentUnit.name);
-			currentUnit.SendMessage("FinishTurn", SendMessageOptions.RequireReceiver);
+			currentUnit.SendMessage("FinishTurn", this.gameObject, SendMessageOptions.RequireReceiver);
 			currentUnit = null;
 			inAction = false;
 		}
@@ -66,5 +69,5 @@ public abstract class AbstractController : MonoBehaviour {
 	/// <summary>
 	/// Notify this controller than the current unit has finished its current move order.
 	/// </summary>
-	protected abstract void UnitFinishedMoveOrder(float distanceMoved);
+	protected abstract void UnitDoneMoving(UnitMoveResponse response);
 }

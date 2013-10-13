@@ -7,12 +7,21 @@ using System.Collections.Generic;
 /// </summary>
 public class SimpleTurnScheduler : MonoBehaviour {
 	
+	/// <summary>
+	/// The ordered list of units
+	/// </summary>
 	public List<GameObject> units;
+	
+	/// <summary>
+	/// A mapping from Unit to Controller
+	/// </summary>
+	private Dictionary<GameObject, AbstractController> controllers;
 	
 	private int turnCounter;
 	
 	// Use this for initialization
 	void Start () {
+		RebuildControllerMapping();
 		// Initialize TurnCounter at -1 so that Unit 0 goes first.
 		turnCounter = -1;
 		NextTurn();
@@ -33,12 +42,21 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	/// <summary>
 	/// Ends the current Unit's turn and notifies the next Unit that it is his turn.
 	/// </summary>
-	public virtual void NextTurn() {
-		if (turnCounter != -1) {
-			WhoseTurn().SendMessage("FinishTurn", SendMessageOptions.RequireReceiver);
-		}
+	virtual public void NextTurn() {
 		Debug.Log(this.name + " is advancing the TurnCounter from " + turnCounter);
 		turnCounter = (turnCounter + 1) % units.Count;
-		units[turnCounter].SendMessage("BeginTurn", this.gameObject);
+		GameObject unit = units[turnCounter];
+		controllers[unit].TakeControlOf(unit);
+	}
+	
+	/// <summary>
+	/// Builds the mapping of units to controllers.
+	/// </summary>
+	protected void RebuildControllerMapping() {
+		controllers = new Dictionary<GameObject, AbstractController>();
+		foreach (GameObject unit in units) {
+			AbstractController controller = unit.GetComponent<UnitInfo>().controller;
+			controllers.Add(unit, controller);
+		}
 	}
 }
