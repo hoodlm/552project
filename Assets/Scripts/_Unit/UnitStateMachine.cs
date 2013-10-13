@@ -52,7 +52,7 @@ public class UnitStateMachine : MonoBehaviour {
 			BroadcastMessage("Move", request);
 			
 		} else if (currentState == State.Moving) {
-			string LogMsg = "RequestMove called on {0}, but it's already moving (called by {2})";
+			string LogMsg = "RequestMove called on {0}, but it's already moving (called by {1})";
 			Debug.Log(string.Format(LogMsg, this.name, request.caller.name));
 		} else {
 			string LogMsg = "RequestMove unexpectedly called on {0} while it is in state \"{1}\" (called by {2})";
