@@ -38,6 +38,10 @@ public class UnitMovement : MonoBehaviour {
 	void Start () {
 		hasTarget = false;
 		origin = transform.position;
+		rigidbody.constraints = 
+			RigidbodyConstraints.FreezePositionX |
+			RigidbodyConstraints.FreezePositionZ |
+			RigidbodyConstraints.FreezeRotation;
 	}
 	
 	// Update is called once per frame
@@ -50,7 +54,8 @@ public class UnitMovement : MonoBehaviour {
 				controller.SendMessage("UnitFinishedMoveOrder", distanceTravelled);
 				hasTarget = false;
 				rigidbody.constraints = 
-					RigidbodyConstraints.FreezePosition |
+					RigidbodyConstraints.FreezePositionX |
+					RigidbodyConstraints.FreezePositionZ |
 					RigidbodyConstraints.FreezeRotation;
 			}
 		}
