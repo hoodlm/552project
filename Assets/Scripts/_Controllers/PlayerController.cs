@@ -36,11 +36,22 @@ public class PlayerController : AbstractController {
 	/// Notify this controller than the current unit has finished its current move order.
 	/// </summary>
 	override protected void UnitDoneMoving(UnitMoveResponse response) {
-		string debugString = 
-			string.Format ("{0} received a report that {1} finished moving.", this.name, currentUnit.name);
-		Debug.Log(debugString);
-		this.GiveUpControl();
-		scheduler.SendMessage("NextTurn", SendMessageOptions.RequireReceiver);
+		if (!response.validMove) {
+			string debugString = 
+				string.Format ("{0} received a report that {1}'s move was invalid (\"{2}\").",
+					this.name, currentUnit.name, response.responseMessage);
+			Debug.Log(debugString);
+			
+			// We allow another move request if this one was invalid.
+			// TODO: notify the user that the move was illegal.
+			
+		} else {
+			string debugString = 
+				string.Format ("{0} received a report that {1} finished moving.", this.name, currentUnit.name);
+			Debug.Log(debugString);
+			this.GiveUpControl();
+			scheduler.SendMessage("NextTurn", SendMessageOptions.RequireReceiver);
+		}
 	}
 	
 	/// <summary>

@@ -29,8 +29,6 @@ public class UnitStateMachine : MonoBehaviour {
 			string LogMsg = "{0} is starting its turn (called by {1})";
 			Debug.Log (string.Format(LogMsg, this.name, caller.name));
 			
-			BroadcastMessage("ShowMovementRadius", GetComponent<UnitMovement>().walkingRange, SendMessageOptions.RequireReceiver);
-			
 		} else {
 			string LogMsg = "BeginTurn unexpectedly called on {0} while it is in state \"{1}\" (called by {2})";
 			Debug.LogWarning(string.Format(LogMsg, this.name, currentState.ToString(), caller.name));
