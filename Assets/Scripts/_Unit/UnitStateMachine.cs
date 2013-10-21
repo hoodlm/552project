@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Models the possible states that a unit is in.
+/// </summary>
 public class UnitStateMachine : MonoBehaviour {
 	
 	private enum State {WaitingTurn, WaitingOrders, Moving, UsingAbility};
@@ -48,6 +51,9 @@ public class UnitStateMachine : MonoBehaviour {
 		}
 	}
 	
+	/// <summary>
+	/// Requests that the unit move to a certain location.
+	/// </summary>
 	public void RequestMove (UnitMoveRequest request) {
 		if (currentState == State.WaitingOrders) {
 			
@@ -63,6 +69,9 @@ public class UnitStateMachine : MonoBehaviour {
 		}
 	}
 	
+	/// <summary>
+	/// Called when the unit has finished moving.
+	/// </summary>
 	public void DoneMoving (UnitMoveResponse response) {
 		if (currentState == State.Moving) {
 			string LogMsg = "{0} is done moving.";
