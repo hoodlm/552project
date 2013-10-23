@@ -47,8 +47,8 @@ public class BattleGUI : MonoBehaviour {
 		GUIAreaHeight = Screen.height / 3;
 		GUIAreaWidth = Screen.width / 2;
 		GUIAreaLeft = 0f;
-		GUIAreaTop = 2 * GUIAreaHeight;
-		GUIArea = new Rect(GUIAreaLeft, GUIAreaTop, GUIAreaWidth, GUIAreaWidth);
+		GUIAreaTop = 0f;
+		GUIArea = new Rect(GUIAreaLeft, GUIAreaTop, GUIAreaWidth, GUIAreaHeight);
 		
 		titleAreaHeight = GUILabelHeight;
 		titleAreaWidth = GUIAreaWidth * 0.80f;
@@ -119,6 +119,7 @@ public class BattleGUI : MonoBehaviour {
 	}
 	
 	private void InitialTurnGUI() {
+		
 		GUI.Box(GUIArea, string.Empty);
 		GUI.Label(titleArea, "Turn Options");
 		
@@ -126,7 +127,8 @@ public class BattleGUI : MonoBehaviour {
 		
 		// MOVEMENT
 		Rect moveButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-		if (GUI.Button(moveButtonRect, "Move Unit")) {
+		if (GUI.Button(moveButtonRect, "Move Unit") || Input.GetKeyDown(KeyCode.M)) {
+			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 			currentView = View.Moving;
 		}
 		currentButtonHeight += buttonHeight;
@@ -138,7 +140,8 @@ public class BattleGUI : MonoBehaviour {
 		
 		// FINISH TURN
 		Rect finishTurnButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-		if (GUI.Button(finishTurnButtonRect, "Finish Turn")) {
+		if (GUI.Button(finishTurnButtonRect, "Finish Turn") || Input.GetKeyDown(KeyCode.F)) {
+			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 			currentView = View.WaitingForEnemyTurn;
 			playerController.SendMessage("GiveUpControl", SendMessageOptions.RequireReceiver);
 		}

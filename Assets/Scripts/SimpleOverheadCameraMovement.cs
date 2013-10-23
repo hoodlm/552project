@@ -40,7 +40,7 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 	/// </summary>
 	public void AutoMoveCameraTo(Vector3 target) {
 		cameraIsAutoMoving = true;
-		autoMoveTarget = new Vector3(target.x, this.transform.position.y, target.z - 10f);
+		autoMoveTarget = new Vector3(target.x, this.transform.position.y, target.z);
 	}
 	
 	private void MoveCameraTowardTarget() {

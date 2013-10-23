@@ -6,15 +6,23 @@ using System.Collections;
 /// </summary>
 public class UnitEffects : MonoBehaviour {
 	
+	// Movement range effect
 	public GameObject movementRadiusPrefab;
 	public Color movementRadiusColor;
 	private float movementRadiusHeight = 3.0f;
 	private GameObject activeMovementRadiusObject;
 	private bool showingRadius;
 	
+	// Highlight active unit effect
+	public GameObject activeUnitPrefab;
+	private GameObject activeUnitHighlightObject;
+	private bool showingActiveUnit;
+	
+	
 	// Use this for initialization
 	void Start () {
 		showingRadius = false;
+		showingActiveUnit = false;
 	}
 	
 	// Update is called once per frame
@@ -40,5 +48,17 @@ public class UnitEffects : MonoBehaviour {
 	public void HideMovementRadius() {
 		showingRadius = false;
 		Destroy(activeMovementRadiusObject);
+	}
+	
+	public void ShowActiveUnit() {
+		if (!showingActiveUnit) {
+			showingActiveUnit = true;
+			activeUnitHighlightObject = Instantiate(activeUnitPrefab, transform.position, Quaternion.identity) as GameObject;
+		}
+	}
+	
+	public void HideActiveUnit() {
+		showingActiveUnit = false;
+		Destroy(activeUnitHighlightObject);
 	}
 }

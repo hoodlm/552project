@@ -36,11 +36,13 @@ public abstract class AbstractController : MonoBehaviour {
 	public void TakeControlOf(GameObject unit) {
 		if (!inAction) {
 			Debug.Log(this.name + " is taking control of " + unit.name);
+			
 			this.BroadcastMessage("ChangeGUIState", "StartTurn", SendMessageOptions.RequireReceiver);
 			inAction = true;
 			currentUnit = unit;
 			currentUnit.SendMessage("BeginTurn", this.gameObject, SendMessageOptions.RequireReceiver);
 			this.SendMessage("AutoMoveCameraTo", currentUnit.transform.position, SendMessageOptions.DontRequireReceiver);
+			currentUnit.SendMessage("ShowActiveUnit", SendMessageOptions.DontRequireReceiver);
 		} else {
 			Debug.LogWarning("Method \"TakeControlOf\" was unexpectedly called while the controller is already active.");
 		}
