@@ -26,6 +26,7 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
 		if (cameraIsAutoMoving) {
 			MoveCameraTowardTarget();
 		} else {
@@ -49,7 +50,7 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		if (trajectory.sqrMagnitude <= 1.0f) {
 			cameraIsAutoMoving = false;
 		} else {
-			MoveCamera(trajectory.normalized * autoMoveSpeed * Time.deltaTime);
+			MoveCamera(trajectory.normalized * autoMoveSpeed * transform.position.y * Time.deltaTime);
 		}
 	}
 	
@@ -67,11 +68,12 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		Vector3 drag = CalculateDrag();
 		
 		currentVelocity += acceleration * Time.deltaTime;
+		float maxVelSqr = maxMoveSpeed * maxMoveSpeed * transform.position.y * transform.position.y;
 		
 		if (acceleration.Equals(Vector3.zero)) {
 			currentVelocity += drag * Time.deltaTime;
-		} else if (currentVelocity.sqrMagnitude >= maxMoveSpeed * maxMoveSpeed) {
-			currentVelocity = currentVelocity.normalized * maxMoveSpeed;
+		} else if (currentVelocity.sqrMagnitude >= maxVelSqr) {
+			currentVelocity = currentVelocity.normalized * maxMoveSpeed * transform.position.y;
 		}
 		
 		MoveCamera(currentVelocity * Time.deltaTime);
@@ -83,6 +85,9 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		localAcceleration += Input.GetAxis("Vertical") * Vector3.forward;
 		
 		localAcceleration = localAcceleration.normalized * maxAcceleration;
+		
+		// Also scale acceleration with zoom height
+		localAcceleration *= transform.position.y;
 		
 		return localAcceleration;
 	}
