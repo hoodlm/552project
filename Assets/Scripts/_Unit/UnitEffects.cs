@@ -9,7 +9,7 @@ public class UnitEffects : MonoBehaviour {
 	// Movement range effect
 	public GameObject movementRadiusPrefab;
 	public Color movementRadiusColor;
-	private float movementRadiusHeight = 3.0f;
+	private float movementRadiusHeight = 2.0f;
 	private GameObject activeMovementRadiusObject;
 	private bool showingRadius;
 	

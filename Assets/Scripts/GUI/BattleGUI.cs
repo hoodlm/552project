@@ -30,7 +30,7 @@ public class BattleGUI : MonoBehaviour {
 	private float titleAreaTop;
 	private Rect titleArea;
 	
-	private float buttonLeft;
+	private float buttonTop;
 	private float buttonHeight;
 	private float buttonWidth;
 	
@@ -44,7 +44,7 @@ public class BattleGUI : MonoBehaviour {
 		GUILabelHeight = 22f;
 		
 		GUIAreaHeight = Screen.height / 3;
-		GUIAreaWidth = Screen.width / 2;
+		GUIAreaWidth = 7 * Screen.width / 12;
 		GUIAreaLeft = 0f;
 		GUIAreaTop = 0f;
 		GUIArea = new Rect(GUIAreaLeft, GUIAreaTop, GUIAreaWidth, GUIAreaHeight);
@@ -56,8 +56,8 @@ public class BattleGUI : MonoBehaviour {
 		titleArea = new Rect(titleAreaLeft, titleAreaTop, titleAreaWidth, titleAreaHeight);	
 		
 		buttonHeight = 30f;
-		buttonWidth = GUIAreaWidth * 0.35f;
-		buttonLeft = GUIAreaLeft + buttonWidth / 6;
+		buttonWidth = GUIAreaWidth * 0.20f;
+		buttonTop = GUIAreaTop + GUIAreaHeight - buttonHeight;
 		
 		ground = GameObject.FindWithTag("Ground");
 		playerController = this.GetComponent<PlayerController>();
@@ -123,31 +123,31 @@ public class BattleGUI : MonoBehaviour {
 		string infoString = playerController.currentUnit.name;
 		GUI.Label(titleArea, infoString);
 		
-		float currentButtonHeight = titleAreaTop + 3 * GUILabelHeight;
+		float currentButtonLeft = GUIAreaLeft + buttonWidth / 2;
 		
 		// MOVEMENT (hidden if the player has already moved)
 		if (!playerController.hasAlreadyMoved) {
-			Rect moveButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-			if (GUI.Button(moveButtonRect, "Move Unit") || Input.GetKeyDown(KeyCode.M)) {
+			Rect moveButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
+			if (GUI.Button(moveButtonRect, "Move") || Input.GetKeyDown(KeyCode.M)) {
 				playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 				currentView = View.Moving;
 			}
-			currentButtonHeight += buttonHeight;
+			currentButtonLeft += buttonWidth;
 		}
 		
 		// ATTACK
-		Rect attackButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
+		Rect attackButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
 		GUI.Button(attackButtonRect, "Attack");
-		currentButtonHeight += buttonHeight;
+		currentButtonLeft += buttonWidth;
 		
 		// FINISH TURN
-		Rect finishTurnButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-		if (GUI.Button(finishTurnButtonRect, "Finish Turn") || Input.GetKeyDown(KeyCode.F)) {
+		Rect finishTurnButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
+		if (GUI.Button(finishTurnButtonRect, "End Turn") || Input.GetKeyDown(KeyCode.E)) {
 			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 			currentView = View.WaitingForEnemyTurn;
 			playerController.SendMessage("GiveUpControl", SendMessageOptions.RequireReceiver);
 		}
-		currentButtonHeight += buttonHeight;
+		currentButtonLeft += buttonWidth;
 	}
 	
 	private void MovingGUI() {
