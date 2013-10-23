@@ -15,7 +15,6 @@ public class BattleGUI : MonoBehaviour {
 	public enum View {WaitingForEnemyTurn, StartTurn, Moving};
 	
 	public View currentView;
-	public bool hasMoved;
 	
 	private float GUILabelHeight;
 	
@@ -121,17 +120,20 @@ public class BattleGUI : MonoBehaviour {
 	private void InitialTurnGUI() {
 		
 		GUI.Box(GUIArea, string.Empty);
-		GUI.Label(titleArea, "Turn Options");
+		string infoString = playerController.currentUnit.name;
+		GUI.Label(titleArea, infoString);
 		
 		float currentButtonHeight = titleAreaTop + 3 * GUILabelHeight;
 		
-		// MOVEMENT
-		Rect moveButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-		if (GUI.Button(moveButtonRect, "Move Unit") || Input.GetKeyDown(KeyCode.M)) {
-			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
-			currentView = View.Moving;
+		// MOVEMENT (hidden if the player has already moved)
+		if (!playerController.hasAlreadyMoved) {
+			Rect moveButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
+			if (GUI.Button(moveButtonRect, "Move Unit") || Input.GetKeyDown(KeyCode.M)) {
+				playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
+				currentView = View.Moving;
+			}
+			currentButtonHeight += buttonHeight;
 		}
-		currentButtonHeight += buttonHeight;
 		
 		// ATTACK
 		Rect attackButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);

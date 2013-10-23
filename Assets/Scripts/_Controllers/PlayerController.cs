@@ -43,6 +43,7 @@ public class PlayerController : AbstractController {
 			// TODO: notify the user that the move was illegal.
 			
 		} else {
+			hasAlreadyMoved = true;
 			string debugString = 
 				string.Format ("{0} received a report that {1} finished moving.", this.name, currentUnit.name);
 			Debug.Log(debugString);
