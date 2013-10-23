@@ -11,6 +11,8 @@ public class UnitInfo : MonoBehaviour {
 	/// </summary>
 	public AbstractController controller;
 	
+	public float walkingDistance = 10f;
+	
 	// Use this for initialization
 	void Start () {
 	
@@ -19,5 +21,12 @@ public class UnitInfo : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+	
+	/// <summary>
+	/// Calculates the max distance this unit can move in a turn.
+	/// </summary>
+	public float CalculateWalkingDistance() {
+		return walkingDistance;
 	}
 }

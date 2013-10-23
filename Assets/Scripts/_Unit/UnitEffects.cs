@@ -10,10 +10,11 @@ public class UnitEffects : MonoBehaviour {
 	public Color movementRadiusColor;
 	private float movementRadiusHeight = 3.0f;
 	private GameObject activeMovementRadiusObject;
+	private bool showingRadius;
 	
 	// Use this for initialization
 	void Start () {
-	
+		showingRadius = false;
 	}
 	
 	// Update is called once per frame
@@ -21,14 +22,23 @@ public class UnitEffects : MonoBehaviour {
 	
 	}
 	
+	public void ShowMovementRadius() {
+		float radius = this.GetComponent<UnitInfo>().CalculateWalkingDistance();
+		ShowMovementRadius(radius);
+	}
+	
 	public void ShowMovementRadius(float radius) {
-		activeMovementRadiusObject = Instantiate(movementRadiusPrefab, transform.position, Quaternion.identity) as GameObject;
-		activeMovementRadiusObject.transform.Rotate(Vector3.left, 90f);
-		activeMovementRadiusObject.transform.localScale = new Vector3(radius, radius, movementRadiusHeight);
-		activeMovementRadiusObject.renderer.material.color = movementRadiusColor;
+		if (!showingRadius) {
+			showingRadius = true;
+			activeMovementRadiusObject = Instantiate(movementRadiusPrefab, transform.position, Quaternion.identity) as GameObject;
+			activeMovementRadiusObject.transform.Rotate(Vector3.left, 90f);
+			activeMovementRadiusObject.transform.localScale = new Vector3(radius, radius, movementRadiusHeight);
+			activeMovementRadiusObject.renderer.material.color = movementRadiusColor;
+		}
 	}
 	
 	public void HideMovementRadius() {
+		showingRadius = false;
 		Destroy(activeMovementRadiusObject);
 	}
 }

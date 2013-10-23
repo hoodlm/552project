@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Class to handle the GUI and Player I/O during battles.
+/// </summary>
 public class BattleGUI : MonoBehaviour {
 	
 	/// <summary>
 	/// The possible views of the BattleGUI object. Possible states:
 	/// 1. WaitingForEnemyTurn - it is not the player's turn.
-	/// 2. Initial - the primary options to show at the beginning of the player's turn.
+	/// 2. StartTurn - the primary options to show at the beginning of the player's turn.
 	/// 3. Moving - the player has selected to move the unit
 	/// </summary>
-	public enum View {WaitingForEnemyTurn, Initial, Moving};
+	public enum View {WaitingForEnemyTurn, StartTurn, Moving};
 	
 	public View currentView;
 	public bool hasMoved;
@@ -32,9 +35,12 @@ public class BattleGUI : MonoBehaviour {
 	private float buttonHeight;
 	private float buttonWidth;
 	
+	private GameObject ground;
+	private AbstractController playerController;
+	
 	// Use this for initialization
 	void Start () {
-		currentView = View.Initial;
+		currentView = View.StartTurn;
 		
 		GUILabelHeight = 22f;
 		
@@ -53,6 +59,9 @@ public class BattleGUI : MonoBehaviour {
 		buttonHeight = 30f;
 		buttonWidth = GUIAreaWidth * 0.35f;
 		buttonLeft = GUIAreaLeft + buttonWidth / 6;
+		
+		ground = GameObject.FindWithTag("Ground");
+		playerController = this.GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame
@@ -66,7 +75,7 @@ public class BattleGUI : MonoBehaviour {
 			WaitingForEnemyTurnGUI();
 			break;
 			
-		case View.Initial:
+		case View.StartTurn:
 			InitialTurnGUI();
 			break;
 			
@@ -76,6 +85,31 @@ public class BattleGUI : MonoBehaviour {
 			
 		default:
 			WaitingForEnemyTurnGUI();
+			break;
+		}
+	}
+	
+	/// <summary>
+	/// Allow external classes to change the state of the GUI.
+	/// </summary>
+	void ChangeGUIState(string state) {
+		switch (state) {
+			
+		case "StartTurn":
+			this.currentView = View.StartTurn;
+			break;
+			
+		case "WaitingForEnemyTurn":
+			this.currentView = View.WaitingForEnemyTurn;
+			break;
+			
+		case "Moving":
+			this.currentView = View.Moving;
+			break;
+			
+		default:
+			string debugString = string.Format("Unrecognized state change requested \"{0}\"", state);
+			Debug.LogError(debugString);
 			break;
 		}
 	}
@@ -90,20 +124,49 @@ public class BattleGUI : MonoBehaviour {
 		
 		float currentButtonHeight = titleAreaTop + 3 * GUILabelHeight;
 		
+		// MOVEMENT
 		Rect moveButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-		GUI.Button(moveButtonRect, "Move Unit");
+		if (GUI.Button(moveButtonRect, "Move Unit")) {
+			currentView = View.Moving;
+		}
 		currentButtonHeight += buttonHeight;
 		
+		// ATTACK
 		Rect attackButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
 		GUI.Button(attackButtonRect, "Attack");
 		currentButtonHeight += buttonHeight;
 		
+		// FINISH TURN
 		Rect finishTurnButtonRect = new Rect(buttonLeft, currentButtonHeight, buttonWidth, buttonHeight);
-		GUI.Button(finishTurnButtonRect, "Finish Turn");
+		if (GUI.Button(finishTurnButtonRect, "Finish Turn")) {
+			currentView = View.WaitingForEnemyTurn;
+			playerController.SendMessage("GiveUpControl", SendMessageOptions.RequireReceiver);
+		}
 		currentButtonHeight += buttonHeight;
 	}
 	
 	private void MovingGUI() {
+		
+		playerController.currentUnit.SendMessage("ShowMovementRadius", SendMessageOptions.RequireReceiver);
+		
 		GUI.Box(GUIArea, string.Empty);
+		if (Input.GetButtonDown ("Fire1")) {
+			Vector3 target = GetCursorPositionOnTerrain();
+			BroadcastMessage("SendMoveOrderToUnit", target, SendMessageOptions.RequireReceiver);
+			playerController.currentUnit.SendMessage("HideMovementRadius", SendMessageOptions.RequireReceiver);
+			currentView = View.StartTurn;
+		}
+		
+	}
+	
+	/// <summary>
+	/// Helper method to retrieve the cursor position on terrain.
+	/// </summary>
+	/// <returns>
+	private Vector3 GetCursorPositionOnTerrain() {
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit = new RaycastHit();
+		ground.collider.Raycast(ray, out hit, float.PositiveInfinity);
+		return hit.point;
 	}
 }

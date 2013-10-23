@@ -18,7 +18,7 @@ public abstract class AbstractController : MonoBehaviour {
 	/// <summary>
 	/// The unit currently receiving actions from this controller.
 	/// </summary>
-	protected GameObject currentUnit;
+	public GameObject currentUnit;
 	
 	/// <summary>
 	/// The ground or terrain of this level.
@@ -36,9 +36,12 @@ public abstract class AbstractController : MonoBehaviour {
 	public void TakeControlOf(GameObject unit) {
 		if (!inAction) {
 			Debug.Log(this.name + " is taking control of " + unit.name);
+			BroadcastMessage("ChangeGUIState", "StartTurn", SendMessageOptions.RequireReceiver);
 			inAction = true;
 			currentUnit = unit;
 			currentUnit.SendMessage("BeginTurn", this.gameObject, SendMessageOptions.RequireReceiver);
+		} else {
+			Debug.LogWarning("Method \"TakeControlOf\" was unexpectedly called while the controller is already active.");
 		}
 	}
 	
@@ -48,9 +51,10 @@ public abstract class AbstractController : MonoBehaviour {
 	public void GiveUpControl() {
 		if (inAction) {
 			Debug.Log(this.name + " is giving up control of " + currentUnit.name);
+			inAction = false;
 			currentUnit.SendMessage("FinishTurn", this.gameObject, SendMessageOptions.RequireReceiver);
 			currentUnit = null;
-			inAction = false;
+			scheduler.SendMessage("NextTurn", SendMessageOptions.RequireReceiver);
 		}
 	}
 	
@@ -64,7 +68,7 @@ public abstract class AbstractController : MonoBehaviour {
 	/// <summary>
 	/// Moves the unit that this controller is currently controlling.
 	/// </summary>
-	protected abstract void SendMoveOrderToUnit();
+	protected abstract void SendMoveOrderToUnit(Vector3 target);
 	
 	/// <summary>
 	/// Notify this controller than the current unit has finished its current move order.

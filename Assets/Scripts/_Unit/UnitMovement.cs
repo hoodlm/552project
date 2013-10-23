@@ -16,7 +16,7 @@ public class UnitMovement : MonoBehaviour {
 	/// <summary>
 	/// The range that this unit can move in a single turn.
 	/// </summary>
-	public float walkingRange = 10f;
+	private UnitInfo unitInfo;
 	
 	/// <summary>
 	/// The original location of this unit at the time that it receives a move order.
@@ -43,6 +43,7 @@ public class UnitMovement : MonoBehaviour {
 	void Start () {
 		hasTarget = false;
 		origin = transform.position;
+		unitInfo = this.GetComponent<UnitInfo>();
 		rigidbody.constraints = 
 			RigidbodyConstraints.FreezePositionX |
 			RigidbodyConstraints.FreezePositionZ |
@@ -94,9 +95,11 @@ public class UnitMovement : MonoBehaviour {
 	/// Is the test position within the movement range of this unit?
 	/// </summary>
 	private bool WithinRange(Vector3 testPosition) {
+		float walkingRange = unitInfo.CalculateWalkingDistance();
+		
 		// We compare based on squared distance for performance reasons
 		float distanceSquared = (this.transform.position - testPosition).sqrMagnitude;
-		return (distanceSquared <= this.walkingRange * this.walkingRange);
+		return (distanceSquared <= walkingRange * walkingRange);
 	}
 	
 	/// <summary>
