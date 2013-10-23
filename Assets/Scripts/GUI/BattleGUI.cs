@@ -92,7 +92,7 @@ public class BattleGUI : MonoBehaviour {
 	/// <summary>
 	/// Allow external classes to change the state of the GUI.
 	/// </summary>
-	void ChangeGUIState(string state) {
+	public void ChangeGUIState(string state) {
 		switch (state) {
 			
 		case "StartTurn":

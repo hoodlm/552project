@@ -15,6 +15,10 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 	
 	private Vector3 currentVelocity = Vector3.zero;
 	
+	public float autoMoveSpeed = 12f;
+	private bool cameraIsAutoMoving = false;
+	private Vector3 autoMoveTarget = Vector3.zero;
+	
 	// Use this for initialization
 	void Start () {
 	
@@ -22,11 +26,34 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Zooming();
-		SimpleMovement();
+		if (cameraIsAutoMoving) {
+			MoveCameraTowardTarget();
+		} else {
+			ZoomingUserInput();
+			SimpleMovementUserInput();
+		}
 	}
 	
-	private void Zooming() {
+	/// <summary>
+	/// Can be called by external classes for camera movement "scripts".
+	/// Locks down all camera controls and moves the camera to the target position (ignoring the y coordinate).
+	/// </summary>
+	public void AutoMoveCameraTo(Vector3 target) {
+		cameraIsAutoMoving = true;
+		autoMoveTarget = new Vector3(target.x, this.transform.position.y, target.z - 10f);
+	}
+	
+	private void MoveCameraTowardTarget() {
+		Vector3 trajectory = autoMoveTarget - this.transform.position;
+		
+		if (trajectory.sqrMagnitude <= 1.0f) {
+			cameraIsAutoMoving = false;
+		} else {
+			MoveCamera(trajectory.normalized * autoMoveSpeed * Time.deltaTime);
+		}
+	}
+	
+	private void ZoomingUserInput() {
 		float zoom = Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
 		if ((zoom > 0f && transform.position.y >= minHeight) ||
 			(zoom < 0f && transform.position.y <= maxHeight)) {
@@ -35,7 +62,7 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		}
 	}
 	
-	private void SimpleMovement() {
+	private void SimpleMovementUserInput() {
 		Vector3 acceleration = AccelerationFromUserInput();
 		Vector3 drag = CalculateDrag();
 		
