@@ -7,6 +7,7 @@ public class PlayerController : AbstractController {
 	void Start () {
 		scheduler = GameObject.FindGameObjectWithTag("BattleManager");
 		ground = GameObject.FindWithTag("Ground");
+		player = this.gameObject;
 	}
 	
 	// Update is called once per frame

@@ -30,9 +30,12 @@ public abstract class AbstractController : MonoBehaviour {
 	/// </summary>
 	protected GameObject ground;
 	
+	protected GameObject player;
+	
 	void Start () {
 		scheduler = GameObject.FindGameObjectWithTag("BattleManager");
-		ground = GameObject.FindWithTag("Ground");
+		ground = GameObject.FindGameObjectWithTag("Ground");
+		player = GameObject.FindGameObjectWithTag("Player");
 	}
 	
 	/// <summary>
@@ -42,12 +45,12 @@ public abstract class AbstractController : MonoBehaviour {
 		if (!inAction) {
 			Debug.Log(this.name + " is taking control of " + unit.name);
 			
-			this.BroadcastMessage("ChangeGUIState", "StartTurn", SendMessageOptions.RequireReceiver);
+			this.BroadcastMessage("ChangeGUIState", "StartTurn", SendMessageOptions.DontRequireReceiver);
 			inAction = true;
 			currentUnit = unit;
 			hasAlreadyMoved = false;
 			currentUnit.SendMessage("BeginTurn", this.gameObject, SendMessageOptions.RequireReceiver);
-			this.SendMessage("AutoMoveCameraTo", currentUnit.transform.position, SendMessageOptions.DontRequireReceiver);
+			player.SendMessage("AutoMoveCameraTo", currentUnit.transform.position, SendMessageOptions.DontRequireReceiver);
 			currentUnit.SendMessage("ShowActiveUnit", SendMessageOptions.DontRequireReceiver);
 		} else {
 			Debug.LogWarning("Method \"TakeControlOf\" was unexpectedly called while the controller is already active.");

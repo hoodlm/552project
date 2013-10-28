@@ -19,17 +19,23 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	
 	private int turnCounter;
 	
+	/// <summary>
+	/// We wait a few seconds before we start, to make sure all initialization is done.
+	/// </summary>
+	private float startTimer = 3f;
+	
 	// Use this for initialization
 	void Start () {
 		RebuildControllerMapping();
 		// Initialize TurnCounter at -1 so that Unit 0 goes first.
 		turnCounter = -1;
-		NextTurn();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (turnCounter < 0 && Time.timeSinceLevelLoad > startTimer) {
+			NextTurn();
+		}
 	}
 	
 	/// <summary>

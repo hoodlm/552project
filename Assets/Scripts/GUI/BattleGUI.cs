@@ -37,6 +37,13 @@ public class BattleGUI : MonoBehaviour {
 	private GameObject ground;
 	private AbstractController playerController;
 	
+	// We need state variables for keyboard presses because
+	// these are normally set on a per-frame basis,
+	// but OnGUI may be called several times per frame.
+	private bool moveKeyPressed;
+	private bool endTurnKeyPressed;
+	private bool attackKeyPressed;
+	
 	// Use this for initialization
 	void Start () {
 		currentView = View.StartTurn;
@@ -65,17 +72,23 @@ public class BattleGUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		// We want to get these at the beginning of the frame. Anytime OnGUI reads a true,
+		// it will clear them to false so that multiple key presses aren't recorded in a single frame.
+		moveKeyPressed = Input.GetKeyDown(KeyCode.M);
+		endTurnKeyPressed = Input.GetKeyDown(KeyCode.E);
+		attackKeyPressed = Input.GetKeyDown(KeyCode.A);
 	}
 	
 	void OnGUI() {
+		
 		switch (currentView) {
 		case View.WaitingForEnemyTurn:
 			WaitingForEnemyTurnGUI();
 			break;
 			
 		case View.StartTurn:
-			InitialTurnGUI();
+			if (null != playerController.currentUnit)
+				InitialTurnGUI();
 			break;
 			
 		case View.Moving:
@@ -128,7 +141,9 @@ public class BattleGUI : MonoBehaviour {
 		// MOVEMENT (hidden if the player has already moved)
 		if (!playerController.hasAlreadyMoved) {
 			Rect moveButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
-			if (GUI.Button(moveButtonRect, "Move") || Input.GetKeyDown(KeyCode.M)) {
+			if (GUI.Button(moveButtonRect, "Move") || moveKeyPressed) {
+				Debug.Log("Player is moving the unit through GUI.");
+				moveKeyPressed = false;
 				playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 				currentView = View.Moving;
 			}
@@ -142,7 +157,9 @@ public class BattleGUI : MonoBehaviour {
 		
 		// FINISH TURN
 		Rect finishTurnButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
-		if (GUI.Button(finishTurnButtonRect, "End Turn") || Input.GetKeyDown(KeyCode.E)) {
+		if (GUI.Button(finishTurnButtonRect, "End Turn") || endTurnKeyPressed) {
+			Debug.Log("Player is ending turn through GUI.");
+			endTurnKeyPressed = false;
 			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 			currentView = View.WaitingForEnemyTurn;
 			playerController.SendMessage("GiveUpControl", SendMessageOptions.RequireReceiver);
