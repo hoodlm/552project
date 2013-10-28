@@ -18,11 +18,16 @@ public class UnitEffects : MonoBehaviour {
 	private GameObject activeUnitHighlightObject;
 	private bool showingActiveUnit;
 	
+	// This unit's team color
+	private Color teamColor;
 	
 	// Use this for initialization
 	void Start () {
 		showingRadius = false;
 		showingActiveUnit = false;
+		
+		teamColor = GetComponent<UnitInfo>().controller.teamColor;
+		teamColor.a = 1.0f;
 	}
 	
 	// Update is called once per frame
@@ -54,6 +59,7 @@ public class UnitEffects : MonoBehaviour {
 		if (!showingActiveUnit) {
 			showingActiveUnit = true;
 			activeUnitHighlightObject = Instantiate(activeUnitPrefab, transform.position, Quaternion.identity) as GameObject;
+			activeUnitHighlightObject.particleSystem.startColor = Color.Lerp(teamColor, Color.white, 0.6f);
 		}
 	}
 	

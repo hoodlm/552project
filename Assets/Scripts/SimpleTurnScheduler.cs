@@ -22,7 +22,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	/// <summary>
 	/// We wait a few seconds before we start, to make sure all initialization is done.
 	/// </summary>
-	private float startTimer = 3f;
+	private float startTimer = 0.5f;
 	
 	// Use this for initialization
 	void Start () {

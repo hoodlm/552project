@@ -8,6 +8,8 @@ using System.Collections;
 /// </summary>
 public abstract class AbstractController : MonoBehaviour {
 	
+	public Color teamColor;
+	
 	protected GameObject scheduler;
 	
 	/// <summary>
