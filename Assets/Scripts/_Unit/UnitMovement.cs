@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// A Unit is any soldier, monster, or other agent that moves around the battlefield.
@@ -14,7 +15,7 @@ public class UnitMovement : MonoBehaviour {
 	public float walkingSpeed = 10f;
 	
 	/// <summary>
-	/// The range that this unit can move in a single turn.
+	/// This unit's stats, primarily used to calculate the range that this unit can move in a single turn.
 	/// </summary>
 	private UnitInfo unitInfo;
 	
@@ -22,6 +23,16 @@ public class UnitMovement : MonoBehaviour {
 	/// The original location of this unit at the time that it receives a move order.
 	/// </summary>
 	private Vector3 origin;
+	
+	/// <summary>
+	/// Keep track of the last known position this unit's transform has had.
+	/// </summary>
+	private Vector3 previousPosition;
+	
+	/// <summary>
+	/// The number of frames in a row this unit has been determined to be stuck.
+	/// </summary>
+	private int stuckCounter;
 	
 	/// <summary>
 	/// The walking target for this unit.
@@ -42,8 +53,10 @@ public class UnitMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		hasTarget = false;
+		stuckCounter = 0;
 		origin = transform.position;
 		unitInfo = this.GetComponent<UnitInfo>();
+		previousPosition = transform.position;
 		rigidbody.constraints = 
 			RigidbodyConstraints.FreezePositionX |
 			RigidbodyConstraints.FreezePositionZ |
@@ -54,8 +67,19 @@ public class UnitMovement : MonoBehaviour {
 	void Update () {
 		if (hasTarget) {
 			MoveTowardsWaypoint(target);
+			if (UnitIsStuck()) {
+				Debug.Log(this.name + " appears to be stuck.");
+				stuckCounter = 0;
+				hasTarget = false;
+				rigidbody.constraints = 
+					RigidbodyConstraints.FreezePositionX |
+					RigidbodyConstraints.FreezePositionZ |
+					RigidbodyConstraints.FreezeRotation;
+				BroadcastMessage("DoneMoving", StuckResponse(), SendMessageOptions.RequireReceiver);
+			}
 			if (HasReachedWaypoint(target)) {
 				Debug.Log(this.name + " has reached its move target.");
+				stuckCounter = 0;
 				hasTarget = false;
 				rigidbody.constraints = 
 					RigidbodyConstraints.FreezePositionX |
@@ -120,11 +144,20 @@ public class UnitMovement : MonoBehaviour {
 	}
 	
 	/// <summary>
+	/// Determines whether the unit is stuck.
+	/// </summary>
+	private bool UnitIsStuck() {
+		if (Vector3.Distance(transform.position, previousPosition) <= 0.90f * walkingSpeed * Time.deltaTime) {
+			stuckCounter++;
+		}
+		
+		previousPosition = transform.position;
+		return (stuckCounter >= 30);
+	}
+	
+	/// <summary>
 	/// Factory method to build a move response for an out of range position.
 	/// </summary>
-	/// <param name='request'>
-	/// The original move request object.
-	/// </param>
 	private UnitMoveResponse OutOfRangeResponse() {
 		return new UnitMoveResponse(this.moveRequest.caller, this.transform.position, 0f, false, "Out of range");
 	}
@@ -132,11 +165,16 @@ public class UnitMovement : MonoBehaviour {
 	/// <summary>
 	/// Factory method to build a move response for a successfully executed move.
 	/// </summary>
-	/// <param name='request'>
-	/// The original move request object.
-	/// </param>
 	private UnitMoveResponse SuccessfulResponse() {
 		float distance = (this.transform.position - this.origin).magnitude;
 		return new UnitMoveResponse(this.moveRequest.caller, this.transform.position, distance);
+	}
+	
+	/// <summary>
+	/// Factory method to build a move response for a unit that got stuck trying to complete a move.
+	/// </summary>
+	private UnitMoveResponse StuckResponse() {
+		float distance = (this.transform.position - this.origin).magnitude;
+		return new UnitMoveResponse(this.moveRequest.caller, this.transform.position, distance, true, "Unit got stuck");
 	}
 }
