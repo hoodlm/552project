@@ -11,11 +11,18 @@ public class UnitInfo : MonoBehaviour {
 	/// </summary>
 	public AbstractController controller;
 	
+	public float maxHP = 100f;
+	public float currentHP;
+	
+	public float attackDamage = 10f;
+	public float defense = 5f;
+	
 	public float walkingDistance = 10f;
+	
 	
 	// Use this for initialization
 	void Start () {
-	
+		currentHP = maxHP;
 	}
 	
 	// Update is called once per frame
