@@ -106,6 +106,11 @@ public class UnitMovement : MonoBehaviour {
 			this.origin = transform.position;
 			this.moveRequest = request;
 			if (!WithinRange(target)) {
+				string debugString = string.Format
+					("Move was of distance {0}, but unit's max distance is {1}",
+						(this.transform.position - target).magnitude,
+						unitInfo.CalculateWalkingDistance());
+				Debug.Log(debugString);
 				BroadcastMessage("DoneMoving", OutOfRangeResponse(), SendMessageOptions.RequireReceiver);
 			} else {
 				this.hasTarget = true;

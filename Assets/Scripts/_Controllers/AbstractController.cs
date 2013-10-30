@@ -23,6 +23,11 @@ public abstract class AbstractController : MonoBehaviour {
 	public GameObject currentUnit;
 	
 	/// <summary>
+	/// The current unit is actively trying to complete a move.
+	/// </summary>
+	protected bool isMoving;
+	
+	/// <summary>
 	/// The current unit has already (successfully) moved.
 	/// </summary>
 	public bool hasAlreadyMoved;
@@ -51,6 +56,7 @@ public abstract class AbstractController : MonoBehaviour {
 			inAction = true;
 			currentUnit = unit;
 			hasAlreadyMoved = false;
+			isMoving = false;
 			currentUnit.SendMessage("BeginTurn", this.gameObject, SendMessageOptions.RequireReceiver);
 			player.SendMessage("AutoMoveCameraTo", currentUnit.transform.position, SendMessageOptions.DontRequireReceiver);
 			currentUnit.SendMessage("ShowActiveUnit", SendMessageOptions.DontRequireReceiver);
