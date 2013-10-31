@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Text;
 
 /// <summary>
 /// Information about this unit's controller, stats, equipment, status, etc.
@@ -35,5 +36,16 @@ public class UnitInfo : MonoBehaviour {
 	/// </summary>
 	public float CalculateWalkingDistance() {
 		return walkingDistance;
+	}
+	
+	/// <summary>
+	/// Build an info string for this unit. This is a brief string for display in GUI, etc.
+	/// </summary>
+	public string GetInfoString() {
+		StringBuilder sb = new StringBuilder();
+		sb.AppendLine(gameObject.name);
+		sb.AppendLine(string.Format("HP: {0}/{1}", currentHP, maxHP));
+		
+		return sb.ToString();
 	}
 }

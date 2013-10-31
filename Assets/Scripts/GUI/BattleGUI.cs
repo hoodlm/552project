@@ -24,11 +24,11 @@ public class BattleGUI : MonoBehaviour {
 	private float GUIAreaTop;
 	private Rect GUIArea;
 	
-	private float titleAreaWidth;
-	private float titleAreaHeight;
-	private float titleAreaLeft;
-	private float titleAreaTop;
-	private Rect titleArea;
+	private float unitInfoAreaWidth;
+	private float unitInfoAreaHeight;
+	private float unitInfoAreaLeft;
+	private float unitInfoAreaTop;
+	private Rect unitInfoArea;
 	
 	private float buttonTop;
 	private float buttonHeight;
@@ -56,11 +56,11 @@ public class BattleGUI : MonoBehaviour {
 		GUIAreaTop = 0f;
 		GUIArea = new Rect(GUIAreaLeft, GUIAreaTop, GUIAreaWidth, GUIAreaHeight);
 		
-		titleAreaHeight = GUILabelHeight;
-		titleAreaWidth = GUIAreaWidth * 0.80f;
-		titleAreaLeft = GUIAreaLeft;
-		titleAreaTop = GUIAreaTop;
-		titleArea = new Rect(titleAreaLeft, titleAreaTop, titleAreaWidth, titleAreaHeight);	
+		unitInfoAreaHeight = GUILabelHeight * 4.0f;
+		unitInfoAreaWidth = GUIAreaWidth * 0.80f;
+		unitInfoAreaLeft = GUIAreaLeft;
+		unitInfoAreaTop = GUIAreaTop;
+		unitInfoArea = new Rect(unitInfoAreaLeft, unitInfoAreaTop, unitInfoAreaWidth, unitInfoAreaHeight);	
 		
 		buttonHeight = 30f;
 		buttonWidth = GUIAreaWidth * 0.20f;
@@ -133,8 +133,8 @@ public class BattleGUI : MonoBehaviour {
 	private void InitialTurnGUI() {
 		
 		GUI.Box(GUIArea, string.Empty);
-		string infoString = playerController.currentUnit.name;
-		GUI.Label(titleArea, infoString);
+		string infoString = playerController.currentUnit.GetComponent<UnitInfo>().GetInfoString();
+		GUI.Label(unitInfoArea, infoString);
 		
 		float currentButtonLeft = GUIAreaLeft + buttonWidth / 2;
 		
