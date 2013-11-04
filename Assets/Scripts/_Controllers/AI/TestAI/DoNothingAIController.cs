@@ -28,6 +28,7 @@ public class DoNothingAIController : AbstractAIController {
 					&& timerRunning) {
 			timer -= Time.deltaTime;
 			if (timer <= 0f) {
+				timerRunning = false;
 				SendMoveOrderToUnit(currentUnit.transform.position);
 			}
 		} else if (currentPhase == TurnPhase.Attacking) {
