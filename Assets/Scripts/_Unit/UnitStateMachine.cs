@@ -6,7 +6,7 @@ using System.Collections;
 /// </summary>
 public class UnitStateMachine : MonoBehaviour {
 	
-	private enum State {WaitingTurn, WaitingOrders, Moving, UsingAbility};
+	private enum State {WaitingTurn, WaitingOrders, Moving, Attacking};
 	
 	private State currentState = State.WaitingTurn;
 	
