@@ -46,15 +46,7 @@ public class FlockingAIController : AbstractAIController {
 				currentUnit.SendMessage("HideMovementRadius", SendMessageOptions.RequireReceiver);
 				currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
 				
-				Vector3 trajectory = currentTarget.transform.position - currentUnit.transform.position;
-				float maxDistance = currentUnit.GetComponent<UnitInfo>().CalculateWalkingDistance();
-				Vector3 target;
-				if (trajectory.sqrMagnitude > maxDistance * maxDistance) {
-					target = currentUnit.transform.position + trajectory.normalized * maxDistance * 0.90f;
-				} else {
-					target = currentUnit.transform.position + trajectory * 0.90f;
-				}
-				SendMoveOrderToUnit(target);
+				SendMoveOrderToUnit(GetValidTrajectoryTo(currentTarget.transform.position));
 			}
 			
 		} else if (currentPhase == TurnPhase.Attacking) {
@@ -62,6 +54,18 @@ public class FlockingAIController : AbstractAIController {
 			currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.DontRequireReceiver);
 			GiveUpControl();
 		}
+	}
+	
+	private Vector3 GetValidTrajectoryTo(Vector3 position) {
+		Vector3 trajectory = position - currentUnit.transform.position;
+		float maxDistance = currentUnit.GetComponent<UnitInfo>().CalculateWalkingDistance();
+		Vector3 target;
+		if (trajectory.sqrMagnitude > maxDistance * maxDistance) {
+			target = currentUnit.transform.position + trajectory.normalized * maxDistance * 0.90f;
+		} else {
+			target = currentUnit.transform.position + trajectory * 0.90f;
+		}
+		return target;
 	}
 	
 	private IList<GameObject> FindOpponentUnits() {
