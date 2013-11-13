@@ -96,4 +96,14 @@ public abstract class AbstractController : MonoBehaviour {
 	/// Notify this controller than the current unit has finished its current move order.
 	/// </summary>
 	protected abstract void UnitDoneMoving(UnitMoveResponse response);
+	
+	/// <summary>
+	/// Tells the current unit to attack target.
+	/// </summary>
+	protected abstract void SendAttackOrderToUnit(GameObject target);
+	
+	/// <summary>
+	/// Notify this controller than the current unit has finished its current attack order.
+	/// </summary>
+	protected abstract void UnitDoneAttacking(UnitAttackResponse response);
 }

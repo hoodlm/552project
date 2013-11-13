@@ -19,9 +19,9 @@ public class UnitAttackResponse {
 	/// <summary>
 	/// The damage performed by the attack.
 	/// </summary>
-	public readonly int damage;
+	public readonly float damage;
 	
-	public UnitAttackResponse(GameObject caller, bool wasEvaded, int damage) {
+	public UnitAttackResponse(GameObject caller, bool wasEvaded, float damage) {
 		this.caller = caller;
 		this.wasEvaded = wasEvaded;
 		this.damage = damage;

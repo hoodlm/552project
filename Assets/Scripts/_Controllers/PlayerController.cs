@@ -50,4 +50,27 @@ public class PlayerController : AbstractController {
 			Debug.Log(debugString);
 		}
 	}
+	
+	/// <summary>
+	/// Tells the current unit to attack target.
+	/// </summary>
+	override protected void SendAttackOrderToUnit(GameObject target) {
+		string debugString = 
+			string.Format("Target for attack: {0}", target.name);
+		Debug.Log(debugString);
+		
+		UnitAttackRequest request = new UnitAttackRequest(this.gameObject, target, currentUnit);
+		
+		Debug.Log("Sending attack order to " + currentUnit.name);
+		currentUnit.SendMessage("RequestAttack", request, SendMessageOptions.RequireReceiver);
+	}
+	
+	/// <summary>
+	/// Notify this controller than the current unit has finished its current attack order.
+	/// </summary>
+	override protected void UnitDoneAttacking(UnitAttackResponse response) {
+		string debugString = 
+			string.Format ("{0} received a report that {1} finished attacking.", this.name, currentUnit.name);
+		Debug.Log(debugString);
+	}
 }

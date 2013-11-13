@@ -31,9 +31,9 @@ public class UnitAttackRequest {
 	/// The target of the attack.
 	/// </param>
 	public UnitAttackRequest(GameObject caller, GameObject target, GameObject attacker) {
-		this.caller = caller;
 		this.target = target;
 		this.attacker = attacker;
+		this.caller = caller;
 	}
 	
 }

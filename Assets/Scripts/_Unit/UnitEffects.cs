@@ -11,7 +11,14 @@ public class UnitEffects : MonoBehaviour {
 	public Color movementRadiusColor;
 	private float movementRadiusHeight = 2.0f;
 	private GameObject activeMovementRadiusObject;
-	private bool showingRadius;
+	private bool showingMovementRadius;
+	
+	// Attack range effect
+	public GameObject attackRadiusPrefab;
+	public Color attackRadiusColor;
+	private float attackRadiusHeight = 2.0f;
+	private GameObject activeAttackRadiusObject;
+	private bool showingAttackRadius;
 	
 	// Highlight active unit effect
 	public GameObject activeUnitPrefab;
@@ -23,18 +30,19 @@ public class UnitEffects : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		showingRadius = false;
+		showingMovementRadius = false;
 		showingActiveUnit = false;
 		
 		teamColor = GetComponent<UnitInfo>().controller.teamColor;
 		teamColor.a = 1.0f;
+		attackRadiusColor.a = 1.0f;
 		
 		this.gameObject.renderer.material.color = teamColor;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 	
 	public void ShowMovementRadius() {
@@ -43,8 +51,8 @@ public class UnitEffects : MonoBehaviour {
 	}
 	
 	public void ShowMovementRadius(float radius) {
-		if (!showingRadius) {
-			showingRadius = true;
+		if (!showingMovementRadius) {
+			showingMovementRadius = true;
 			activeMovementRadiusObject = Instantiate(movementRadiusPrefab, transform.position, Quaternion.identity) as GameObject;
 			activeMovementRadiusObject.transform.Rotate(Vector3.left, 90f);
 			activeMovementRadiusObject.transform.localScale = new Vector3(radius, radius, movementRadiusHeight);
@@ -53,8 +61,28 @@ public class UnitEffects : MonoBehaviour {
 	}
 	
 	public void HideMovementRadius() {
-		showingRadius = false;
+		showingMovementRadius = false;
 		Destroy(activeMovementRadiusObject);
+	}
+	
+	public void ShowAttackRadius() {
+		float radius = this.GetComponent<UnitInfo>().CalculateAttackRange();
+		ShowAttackRadius(radius);
+	}
+	
+	public void ShowAttackRadius(float radius) {
+		if (!showingAttackRadius) {
+			showingAttackRadius = true;
+			activeAttackRadiusObject = Instantiate(attackRadiusPrefab, transform.position, Quaternion.identity) as GameObject;
+			activeAttackRadiusObject.transform.Rotate(Vector3.left, 90f);
+			activeAttackRadiusObject.transform.localScale = new Vector3(radius, radius, attackRadiusHeight);
+			activeAttackRadiusObject.renderer.material.color = attackRadiusColor;
+		}
+	}
+	
+	public void HideAttackRadius() {
+		showingAttackRadius = false;
+		Destroy(activeAttackRadiusObject);
 	}
 	
 	public void ShowActiveUnit() {

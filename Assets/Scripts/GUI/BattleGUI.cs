@@ -12,7 +12,7 @@ public class BattleGUI : MonoBehaviour {
 	/// 2. StartTurn - the primary options to show at the beginning of the player's turn.
 	/// 3. Moving - the player has selected to move the unit
 	/// </summary>
-	public enum View {WaitingForEnemyTurn, StartTurn, Moving};
+	public enum View {WaitingForEnemyTurn, StartTurn, Moving, Attacking};
 	
 	public View currentView;
 	
@@ -95,6 +95,10 @@ public class BattleGUI : MonoBehaviour {
 			MovingGUI();
 			break;
 			
+		case View.Attacking:
+			AttackingGUI();
+			break;
+			
 		default:
 			WaitingForEnemyTurnGUI();
 			break;
@@ -117,6 +121,10 @@ public class BattleGUI : MonoBehaviour {
 			
 		case "Moving":
 			this.currentView = View.Moving;
+			break;
+			
+		case "Attacking":
+			this.currentView = View.Attacking;
 			break;
 			
 		default:
@@ -152,7 +160,12 @@ public class BattleGUI : MonoBehaviour {
 		
 		// ATTACK
 		Rect attackButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
-		GUI.Button(attackButtonRect, "Attack");
+		if (GUI.Button(attackButtonRect, "Attack") || attackKeyPressed) {
+			Debug.Log ("Player is attacking through GUI.");
+			attackKeyPressed = false;
+			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
+			currentView = View.Attacking;
+		}
 		currentButtonLeft += buttonWidth;
 		
 		// FINISH TURN
@@ -181,6 +194,21 @@ public class BattleGUI : MonoBehaviour {
 		
 	}
 	
+	private void AttackingGUI() {
+		
+		playerController.currentUnit.SendMessage("ShowAttackRadius", SendMessageOptions.RequireReceiver);
+		GUI.Box(GUIArea, string.Empty);
+		if (Input.GetButtonDown ("Fire1")) {
+			GameObject target = GetUnitAtCursor();
+			if (target != this.gameObject && target.GetComponent<UnitInfo>() != null) {
+				BroadcastMessage("SendAttackOrderToUnit", target, SendMessageOptions.RequireReceiver);
+				playerController.currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
+				currentView = View.StartTurn;
+			}
+		}
+		
+	}
+	
 	/// <summary>
 	/// Helper method to retrieve the cursor position on terrain.
 	/// </summary>
@@ -190,5 +218,21 @@ public class BattleGUI : MonoBehaviour {
 		RaycastHit hit = new RaycastHit();
 		ground.collider.Raycast(ray, out hit, float.PositiveInfinity);
 		return hit.point;
+	}
+	
+	/// <summary>
+	/// Helper method to retrieve the unit at cursor.
+	/// </summary>
+	/// <returns>
+	/// The unit at cursor.
+	/// </returns>
+	private GameObject GetUnitAtCursor() {
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		foreach (RaycastHit hit in Physics.RaycastAll(ray)) {
+			if (hit.collider.gameObject.tag.Equals("Unit")) {
+				return hit.collider.gameObject;
+			}
+		}
+		return null;
 	}
 }

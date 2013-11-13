@@ -4,6 +4,7 @@ using System.Text;
 
 /// <summary>
 /// Information about this unit's controller, stats, equipment, status, etc.
+/// Analogous to a character sheet.
 /// </summary>
 public class UnitInfo : MonoBehaviour {
 	
@@ -19,6 +20,7 @@ public class UnitInfo : MonoBehaviour {
 	public float defense = 5f;
 	
 	public float walkingDistance = 10f;
+	public float attackRange = 2f;
 	
 	
 	// Use this for initialization
@@ -28,7 +30,27 @@ public class UnitInfo : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (this.currentHP <= 0f) {
+			KillUnit();
+		}
+	}
 	
+	public void KillUnit() {
+		gameObject.renderer.material.color = Color.black;
+		GameObject.FindGameObjectWithTag("BattleManager").SendMessage("RemoveFromQueue", this.gameObject);
+	}
+	
+	/// <summary>
+	/// Signal to this unit that it needs to take an attack.
+	/// </summary>
+	/// <param name='request'>
+	/// The attack request.
+	/// </param>
+	public void ReceiveAttack(UnitAttackRequest request) {
+		float damage = request.attacker.GetComponent<UnitInfo>().attackDamage;
+		this.currentHP -= damage;
+		UnitAttackResponse response = new UnitAttackResponse(request.caller, false, damage);
+		request.attacker.SendMessage("DoneAttacking", response);
 	}
 	
 	/// <summary>
@@ -36,6 +58,10 @@ public class UnitInfo : MonoBehaviour {
 	/// </summary>
 	public float CalculateWalkingDistance() {
 		return walkingDistance;
+	}
+	
+	public float CalculateAttackRange() {
+		return attackRange;
 	}
 	
 	/// <summary>

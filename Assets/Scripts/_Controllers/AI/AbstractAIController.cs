@@ -71,4 +71,18 @@ public abstract class AbstractAIController : AbstractController {
 			currentPhase = TurnPhase.Attacking;
 		}
 	}
+	
+	/// <summary>
+	/// Tells the current unit to attack target.
+	/// </summary>
+	override protected void SendAttackOrderToUnit(GameObject target) {
+		
+	}
+	
+	/// <summary>
+	/// Notify this controller than the current unit has finished its current attack order.
+	/// </summary>
+	override protected void UnitDoneAttacking(UnitAttackResponse response) {
+		
+	}
 }

@@ -38,6 +38,10 @@ public class SimpleTurnScheduler : MonoBehaviour {
 		}
 	}
 	
+	public void RemoveFromQueue(GameObject unit) {
+		units.Remove(unit);
+	}
+	
 	/// <summary>
 	/// Whose turn is it anyway?
 	/// </summary>

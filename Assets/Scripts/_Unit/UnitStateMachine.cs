@@ -56,7 +56,7 @@ public class UnitStateMachine : MonoBehaviour {
 		if (currentState == State.WaitingOrders) {
 			
 			currentState = State.Moving;
-			BroadcastMessage("Move", request);
+			BroadcastMessage("Move", request, SendMessageOptions.RequireReceiver);
 			
 		} else if (currentState == State.Moving) {
 			string LogMsg = "RequestMove called on {0}, but it's already moving (called by {1})";
@@ -82,6 +82,39 @@ public class UnitStateMachine : MonoBehaviour {
 			string LogMsg = "RequestMove unexpectedly called on {0} while it is in state \"{1}\"";
 			Debug.LogWarning(string.Format(LogMsg, this.name, currentState.ToString()));
 		}
-
+	}
+	
+	/// <summary>
+	/// Requests that the unit attack another unit.
+	/// </summary>
+	public void RequestAttack (UnitAttackRequest request) {
+		if (currentState == State.WaitingOrders) {
+			
+			currentState = State.Attacking;
+			request.target.BroadcastMessage("ReceiveAttack", request, SendMessageOptions.RequireReceiver);
+		} else if (currentState == State.Attacking) {
+			string LogMsg = "RequestAttack called on {0}, but it's already moving (called by {1})";
+			Debug.Log(string.Format(LogMsg, this.name, request.attacker.name));
+		} else {
+			string LogMsg = "RequestMove unexpectedly called on {0} while it is in state \"{1}\" (called by {2})";
+			Debug.LogWarning(string.Format(LogMsg, this.name, currentState.ToString(), request.attacker.name));
+		}
+	}
+	
+	/// <summary>
+	/// Called when the unit has finished its attack.
+	/// </summary>
+	public void DoneAttacking (UnitAttackResponse response) {
+		if (currentState == State.Attacking) {
+			string LogMsg = "{0} is done attacking.";
+			Debug.Log (string.Format(LogMsg, this.name));
+			currentState = State.WaitingOrders;
+			response.caller.SendMessage("UnitDoneAttacking", response, SendMessageOptions.RequireReceiver);
+			
+			BroadcastMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
+		} else {
+			string LogMsg = "DoneAttacking unexpectedly called on {0} while it is in state \"{1}\"";
+			Debug.LogWarning(string.Format(LogMsg, this.name, currentState.ToString()));
+		}
 	}
 }
