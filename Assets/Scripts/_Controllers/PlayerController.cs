@@ -72,5 +72,11 @@ public class PlayerController : AbstractController {
 		string debugString = 
 			string.Format ("{0} received a report that {1} finished attacking.", this.name, currentUnit.name);
 		Debug.Log(debugString);
+		
+		if (response.validAttack) {
+			hasAlreadyAttacked = true;
+		} else {
+			// TODO Report to user that the attack was illegal
+		}
 	}
 }

@@ -158,15 +158,17 @@ public class BattleGUI : MonoBehaviour {
 			currentButtonLeft += buttonWidth;
 		}
 		
-		// ATTACK
-		Rect attackButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
-		if (GUI.Button(attackButtonRect, "Attack") || attackKeyPressed) {
-			Debug.Log ("Player is attacking through GUI.");
-			attackKeyPressed = false;
-			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
-			currentView = View.Attacking;
+		// ATTACK (hidden if the player has already attacked)
+		if (!playerController.hasAlreadyAttacked) {
+			Rect attackButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
+			if (GUI.Button(attackButtonRect, "Attack") || attackKeyPressed) {
+				Debug.Log ("Player is attacking through GUI.");
+				attackKeyPressed = false;
+				playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
+				currentView = View.Attacking;
+			}
+			currentButtonLeft += buttonWidth;
 		}
-		currentButtonLeft += buttonWidth;
 		
 		// FINISH TURN
 		Rect finishTurnButtonRect = new Rect(currentButtonLeft, buttonTop, buttonWidth, buttonHeight);
@@ -200,8 +202,11 @@ public class BattleGUI : MonoBehaviour {
 		GUI.Box(GUIArea, string.Empty);
 		if (Input.GetButtonDown ("Fire1")) {
 			GameObject target = GetUnitAtCursor();
-			if (target != this.gameObject && target.GetComponent<UnitInfo>() != null) {
+			if (target != null && target.GetComponent<UnitInfo>() != null) {
 				BroadcastMessage("SendAttackOrderToUnit", target, SendMessageOptions.RequireReceiver);
+				playerController.currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
+				currentView = View.StartTurn;
+			} else {
 				playerController.currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
 				currentView = View.StartTurn;
 			}

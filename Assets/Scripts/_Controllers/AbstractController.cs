@@ -33,6 +33,11 @@ public abstract class AbstractController : MonoBehaviour {
 	public bool hasAlreadyMoved;
 	
 	/// <summary>
+	/// The current unit has already (successfully) attacked.
+	/// </summary>
+	public bool hasAlreadyAttacked;
+	
+	/// <summary>
 	/// The ground or terrain of this level.
 	/// </summary>
 	protected GameObject ground;
@@ -56,6 +61,7 @@ public abstract class AbstractController : MonoBehaviour {
 			inAction = true;
 			currentUnit = unit;
 			hasAlreadyMoved = false;
+			hasAlreadyAttacked = false;
 			isMoving = false;
 			currentUnit.SendMessage("BeginTurn", this.gameObject, SendMessageOptions.RequireReceiver);
 			player.SendMessage("AutoMoveCameraTo", currentUnit.transform.position, SendMessageOptions.DontRequireReceiver);

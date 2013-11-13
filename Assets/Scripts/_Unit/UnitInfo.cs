@@ -40,17 +40,10 @@ public class UnitInfo : MonoBehaviour {
 		GameObject.FindGameObjectWithTag("BattleManager").SendMessage("RemoveFromQueue", this.gameObject);
 	}
 	
-	/// <summary>
-	/// Signal to this unit that it needs to take an attack.
-	/// </summary>
-	/// <param name='request'>
-	/// The attack request.
-	/// </param>
-	public void ReceiveAttack(UnitAttackRequest request) {
-		float damage = request.attacker.GetComponent<UnitInfo>().attackDamage;
+	public void TakeDamage(float damage) {
+		string info = string.Format("{0} took {1} damage!", this.gameObject.name, damage);
+		Debug.Log(info);
 		this.currentHP -= damage;
-		UnitAttackResponse response = new UnitAttackResponse(request.caller, false, damage);
-		request.attacker.SendMessage("DoneAttacking", response);
 	}
 	
 	/// <summary>

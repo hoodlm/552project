@@ -91,7 +91,7 @@ public class UnitStateMachine : MonoBehaviour {
 		if (currentState == State.WaitingOrders) {
 			
 			currentState = State.Attacking;
-			request.target.BroadcastMessage("ReceiveAttack", request, SendMessageOptions.RequireReceiver);
+			SendMessage("ExecuteAttack", request, SendMessageOptions.RequireReceiver);
 		} else if (currentState == State.Attacking) {
 			string LogMsg = "RequestAttack called on {0}, but it's already moving (called by {1})";
 			Debug.Log(string.Format(LogMsg, this.name, request.attacker.name));
