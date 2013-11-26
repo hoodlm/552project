@@ -36,8 +36,9 @@ public class UnitEffects : MonoBehaviour {
 		teamColor = GetComponent<UnitInfo>().controller.teamColor;
 		teamColor.a = 1.0f;
 		attackRadiusColor.a = 1.0f;
+		movementRadiusColor.a = 1.0f;
 		
-		this.gameObject.renderer.material.color = teamColor;
+		//this.gameObject.renderer.material.color = teamColor;
 	}
 	
 	// Update is called once per frame
