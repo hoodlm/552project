@@ -52,6 +52,7 @@ public class UnitMovement : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		animation.Play("Idle");
 		hasTarget = false;
 		stuckCounter = 0;
 		origin = transform.position;
@@ -75,6 +76,7 @@ public class UnitMovement : MonoBehaviour {
 					RigidbodyConstraints.FreezePositionX |
 					RigidbodyConstraints.FreezePositionZ |
 					RigidbodyConstraints.FreezeRotation;
+				animation.Play("Idle");
 				BroadcastMessage("DoneMoving", StuckResponse(), SendMessageOptions.RequireReceiver);
 			}
 			if (HasReachedWaypoint(target)) {
@@ -85,6 +87,7 @@ public class UnitMovement : MonoBehaviour {
 					RigidbodyConstraints.FreezePositionX |
 					RigidbodyConstraints.FreezePositionZ |
 					RigidbodyConstraints.FreezeRotation;
+				animation.Play("Idle");
 				BroadcastMessage("DoneMoving", SuccessfulResponse(), SendMessageOptions.RequireReceiver);
 			}
 		}
@@ -113,6 +116,7 @@ public class UnitMovement : MonoBehaviour {
 				Debug.Log(debugString);
 				BroadcastMessage("DoneMoving", OutOfRangeResponse(), SendMessageOptions.RequireReceiver);
 			} else {
+				animation.Play("Walk");
 				this.hasTarget = true;
 				transform.LookAt(target);
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
