@@ -36,6 +36,7 @@ public class UnitInfo : MonoBehaviour {
 	}
 	
 	public void KillUnit() {
+		animation.Play("Die");
 		GameObject.FindGameObjectWithTag("BattleManager").SendMessage("RemoveFromQueue", this.gameObject);
 	}
 	

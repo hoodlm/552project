@@ -78,6 +78,7 @@ ModelImporter:
     7400002: Idle
     7400004: Idle2
     7400006: Attack
+    7400008: Die
     9500000: //RootNode
     11100000: //RootNode
     13700000: body
@@ -162,6 +163,27 @@ ModelImporter:
       firstFrame: 89
       lastFrame: 112
       wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Die
+      takeName: Default Take
+      firstFrame: 119
+      lastFrame: 147
+      wrapMode: 8
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
