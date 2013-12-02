@@ -48,8 +48,12 @@ public class FlockingAIController : AbstractAIController {
 				
 				SendMoveOrderToUnit(GetValidTrajectoryTo(currentTarget.transform.position));
 			}
-			
 		} else if (currentPhase == TurnPhase.Attacking) {
+			GameObject currentTarget = GetClosestUnitFromList(opponentUnits);
+			Debug.Log(currentUnit.name + " is going to attack " + currentTarget.name);
+			SendAttackOrderToUnit(currentTarget);
+			
+		} else if (currentPhase == TurnPhase.Finish) {
 			currentPhase = TurnPhase.WaitingTurn;
 			currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.DontRequireReceiver);
 			GiveUpControl();
