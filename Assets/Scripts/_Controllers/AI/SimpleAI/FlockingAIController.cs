@@ -97,7 +97,7 @@ public class FlockingAIController : AbstractAIController {
 	
 	private GameObject GetClosestUnitFromList(IList<GameObject> units) {
 		float closestDistance = float.PositiveInfinity;
-		GameObject closestObject = null;
+		GameObject closestObject = this.gameObject;
 		
 		foreach(GameObject unit in units) {
 			float distance = Vector3.Distance(currentUnit.transform.position, unit.transform.position);
