@@ -36,7 +36,6 @@ public class UnitInfo : MonoBehaviour {
 	}
 	
 	public void KillUnit() {
-		gameObject.renderer.material.color = Color.black;
 		GameObject.FindGameObjectWithTag("BattleManager").SendMessage("RemoveFromQueue", this.gameObject);
 	}
 	
