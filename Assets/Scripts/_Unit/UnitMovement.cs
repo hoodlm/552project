@@ -53,6 +53,11 @@ public class UnitMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		animation.Play("Idle");
+		animation["Idle"].speed = 0.70f;
+		if (Random.Range(0,2) == 0) {
+			animation["Idle2"].speed = -0.60f;
+			animation.Play("Idle2");
+		}
 		hasTarget = false;
 		stuckCounter = 0;
 		origin = transform.position;
