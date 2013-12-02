@@ -203,7 +203,7 @@ public class BattleGUI : MonoBehaviour {
 		if (Input.GetButtonDown ("Fire1")) {
 			GameObject target = GetUnitAtCursor();
 			if (target != null && target.GetComponent<UnitInfo>() != null) {
-				BroadcastMessage("SendAttackOrderToUnit", target, SendMessageOptions.RequireReceiver);
+				playerController.SendMessage("SendAttackOrderToUnit", target, SendMessageOptions.RequireReceiver);
 				playerController.currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
 				currentView = View.StartTurn;
 			} else {
