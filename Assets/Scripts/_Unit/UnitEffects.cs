@@ -38,7 +38,7 @@ public class UnitEffects : MonoBehaviour {
 		attackRadiusColor.a = 1.0f;
 		movementRadiusColor.a = 1.0f;
 		
-		this.gameObject.BroadcastMessage("SetTeamColor", teamColor);
+		this.gameObject.BroadcastMessage("SetTeamColor", teamColor, SendMessageOptions.DontRequireReceiver);
 		//this.gameObject.renderer.material.color = teamColor;
 	}
 	
