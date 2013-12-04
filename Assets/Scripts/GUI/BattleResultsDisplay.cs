@@ -33,6 +33,12 @@ public class BattleResultsDisplay : MonoBehaviour {
 			
 			Rect displayRect = new Rect(0f, 0f, Screen.width, Screen.height);
 			GUI.Box(displayRect, s);
+			
+			Rect buttonRect = new Rect
+				(Screen.width / 4, Screen.height / 4, Screen.width / 2, 100);
+			if (GUI.Button(buttonRect, "Return to Main Menu")) {
+				Application.LoadLevel(0);
+			}
 		}
 	}
 }
