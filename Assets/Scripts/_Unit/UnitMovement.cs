@@ -70,6 +70,7 @@ public class UnitMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		rigidbody.AddForce(Vector3.down * Time.deltaTime * 100f);
 		if (hasTarget) {
 			MoveTowardsWaypoint(target);
 			if (UnitIsStuck()) {
