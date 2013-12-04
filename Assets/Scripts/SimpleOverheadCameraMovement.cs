@@ -50,7 +50,7 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		if (trajectory.sqrMagnitude <= 1.0f) {
 			cameraIsAutoMoving = false;
 		} else {
-			MoveCamera(trajectory.normalized * autoMoveSpeed * Time.deltaTime);
+			MoveCamera(trajectory.normalized * autoMoveSpeed * Time.deltaTime * transform.position.y);
 		}
 	}
 	

@@ -12,14 +12,14 @@ public class UnitEffects : MonoBehaviour {
 	// Movement range effect
 	public GameObject movementRadiusPrefab;
 	public Color movementRadiusColor;
-	private float movementRadiusHeight = 2.0f;
+	private float movementRadiusHeight = 20.0f;
 	private GameObject activeMovementRadiusObject;
 	private bool showingMovementRadius;
 	
 	// Attack range effect
 	public GameObject attackRadiusPrefab;
 	public Color attackRadiusColor;
-	private float attackRadiusHeight = 2.0f;
+	private float attackRadiusHeight = 20.0f;
 	private GameObject activeAttackRadiusObject;
 	private bool showingAttackRadius;
 	
