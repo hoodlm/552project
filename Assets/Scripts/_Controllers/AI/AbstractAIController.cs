@@ -37,6 +37,7 @@ public abstract class AbstractAIController : AbstractController {
 				string.Format("Target move position: {0},{1},{2}", target.x, target.y, target.z);
 			Debug.Log(debugString);
 			
+			player.SendMessage("AutoMoveCameraTo", target, SendMessageOptions.DontRequireReceiver);
 			UnitMoveRequest request = new UnitMoveRequest(this.gameObject, target);
 			
 			Debug.Log("Sending move order to " + currentUnit.name);

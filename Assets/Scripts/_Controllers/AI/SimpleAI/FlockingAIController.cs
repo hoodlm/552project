@@ -30,7 +30,7 @@ public class FlockingAIController : AbstractAIController {
 		if (currentPhase == TurnPhase.WaitingTurn && this.IsInAction()) {
 			currentPhase = TurnPhase.MovingUnit;
 			currentUnit.SendMessage("ShowMovementRadius", SendMessageOptions.RequireReceiver);
-			timer = thinkingTime;
+			timer = thinkingTime * 3;
 			timerRunning = true;
 			
 		} else if (currentPhase == TurnPhase.MovingUnit
