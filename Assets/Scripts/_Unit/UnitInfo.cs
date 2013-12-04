@@ -46,6 +46,7 @@ public class UnitInfo : MonoBehaviour {
 		string info = string.Format("{0} took {1} damage!", this.gameObject.name, damage);
 		Debug.Log(info);
 		this.currentHP -= damage;
+		BroadcastMessage("ShowDamageEffect", damage);
 	}
 	
 	/// <summary>

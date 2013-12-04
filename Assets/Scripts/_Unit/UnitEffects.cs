@@ -6,6 +6,9 @@ using System.Collections;
 /// </summary>
 public class UnitEffects : MonoBehaviour {
 	
+	// Attack damage effect
+	public GameObject damageTextPrefab;
+	
 	// Movement range effect
 	public GameObject movementRadiusPrefab;
 	public Color movementRadiusColor;
@@ -45,6 +48,12 @@ public class UnitEffects : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
+	}
+	
+	public void ShowDamageEffect(int damage) {
+		GameObject dmg = Instantiate(damageTextPrefab, transform.position, Quaternion.identity) as GameObject;
+		dmg.transform.Rotate(Vector3.right, 90.0f);
+		dmg.GetComponent<TextMesh>().text = damage.ToString();
 	}
 	
 	public void ShowMovementRadius() {
