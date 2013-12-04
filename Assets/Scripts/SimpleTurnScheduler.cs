@@ -45,20 +45,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 		if (BattleIsOver()) {
 			battleOver = true;
 			playerController.SendMessage("ChangeGUIState", "Disable");
-			BroadcastMessage("DisplayBattleResults");
-		}
-	}
-	
-	public void RemoveFromQueue(GameObject unit) {
-		units.Remove(unit);
-		controllers.Remove(unit);
-	}
-	
-	public void RemoveFromQueue(ICollection<GameObject> units) {
-		List<GameObject> listUnits = new List<GameObject>(units);
-		foreach (GameObject unit in listUnits) {
-			units.Remove(unit);
-			controllers.Remove(unit);
+			BroadcastMessage("DisplayBattleResults", GetOutcome());
 		}
 	}
 	
@@ -75,7 +62,9 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	virtual public void NextTurn() {
 		if (!battleOver) {
 			Debug.Log(this.name + " is advancing the TurnCounter from " + turnCounter);
+			do {
 			turnCounter = (turnCounter + 1) % units.Count;
+			} while (units[turnCounter].GetComponent<UnitInfo>().isDead);
 			GameObject unit = units[turnCounter];
 			controllers[unit].TakeControlOf(unit);
 		}
@@ -96,7 +85,32 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	/// If only one distinct controller is left, then the battle is over.
 	/// </summary>
 	protected bool BattleIsOver() {
-		HashSet<AbstractController> remainingPlayers = new HashSet<AbstractController>(controllers.Values);
+		
+		HashSet<AbstractController> remainingPlayers = new HashSet<AbstractController>();
+		foreach (GameObject unit in controllers.Keys) {
+			if (!unit.GetComponent<UnitInfo>().isDead) {
+				remainingPlayers.Add(unit.GetComponent<UnitInfo>().controller);
+			}
+		}
+		
 		return (remainingPlayers.Count == 1);
+	}
+	
+	/// <summary>
+	/// Factory method to generate info about the outcome of the battle.
+	/// </summary>
+	private BattleResult GetOutcome() {
+		string winner = "";
+		int unitsLeft = 0;
+		
+		foreach (GameObject unit in controllers.Keys) {
+			if (!unit.GetComponent<UnitInfo>().isDead) {
+				winner = controllers[unit].name;
+				unitsLeft++;
+			}
+		}
+		
+		BattleResult result = new BattleResult(winner, unitsLeft);
+		return result;
 	}
 }

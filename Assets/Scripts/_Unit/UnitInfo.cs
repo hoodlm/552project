@@ -40,7 +40,6 @@ public class UnitInfo : MonoBehaviour {
 	public void KillUnit() {
 		isDead = true;
 		animation.Play("Die");
-		GameObject.FindGameObjectWithTag("BattleManager").SendMessage("RemoveFromQueue", this.gameObject);
 	}
 	
 	public void TakeDamage(float damage) {
