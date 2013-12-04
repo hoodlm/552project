@@ -17,6 +17,8 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	/// </summary>
 	private Dictionary<GameObject, AbstractController> controllers;
 	
+	private GameObject playerController;
+	
 	private int turnCounter;
 	private bool battleOver;
 	
@@ -27,6 +29,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		playerController = GameObject.FindGameObjectWithTag("Player");
 		battleOver = false;
 		RebuildControllerMapping();
 		// Initialize TurnCounter at -1 so that Unit 0 goes first.
@@ -41,6 +44,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 		
 		if (BattleIsOver()) {
 			battleOver = true;
+			playerController.SendMessage("ChangeGUIState", "Disable");
 			BroadcastMessage("DisplayBattleResults");
 		}
 	}

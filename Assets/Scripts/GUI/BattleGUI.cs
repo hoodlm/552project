@@ -12,7 +12,7 @@ public class BattleGUI : MonoBehaviour {
 	/// 2. StartTurn - the primary options to show at the beginning of the player's turn.
 	/// 3. Moving - the player has selected to move the unit
 	/// </summary>
-	public enum View {WaitingForEnemyTurn, StartTurn, Moving, Attacking};
+	public enum View {WaitingForEnemyTurn, StartTurn, Moving, Attacking, Disabled};
 	
 	public View currentView;
 	
@@ -99,6 +99,10 @@ public class BattleGUI : MonoBehaviour {
 			AttackingGUI();
 			break;
 			
+		case View.Disabled:
+			// Display nothing
+			break;
+			
 		default:
 			WaitingForEnemyTurnGUI();
 			break;
@@ -109,6 +113,8 @@ public class BattleGUI : MonoBehaviour {
 	/// Allow external classes to change the state of the GUI.
 	/// </summary>
 	public void ChangeGUIState(string state) {
+		Debug.Log("Changing battle GUI state to " + state);
+		
 		switch (state) {
 			
 		case "StartTurn":
@@ -125,6 +131,10 @@ public class BattleGUI : MonoBehaviour {
 			
 		case "Attacking":
 			this.currentView = View.Attacking;
+			break;
+			
+		case "Disable":
+			this.currentView = View.Disabled;
 			break;
 			
 		default:
@@ -153,7 +163,7 @@ public class BattleGUI : MonoBehaviour {
 				Debug.Log("Player is moving the unit through GUI.");
 				moveKeyPressed = false;
 				playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
-				currentView = View.Moving;
+				ChangeGUIState("Moving");
 			}
 			currentButtonLeft += buttonWidth;
 		}
@@ -165,7 +175,7 @@ public class BattleGUI : MonoBehaviour {
 				Debug.Log ("Player is attacking through GUI.");
 				attackKeyPressed = false;
 				playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
-				currentView = View.Attacking;
+				ChangeGUIState("Attacking");
 			}
 			currentButtonLeft += buttonWidth;
 		}
@@ -176,7 +186,7 @@ public class BattleGUI : MonoBehaviour {
 			Debug.Log("Player is ending turn through GUI.");
 			endTurnKeyPressed = false;
 			playerController.currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.RequireReceiver);
-			currentView = View.WaitingForEnemyTurn;
+			ChangeGUIState("WaitingForEnemyTurn");
 			playerController.SendMessage("GiveUpControl", SendMessageOptions.RequireReceiver);
 		}
 		currentButtonLeft += buttonWidth;
@@ -191,7 +201,6 @@ public class BattleGUI : MonoBehaviour {
 			Vector3 target = GetCursorPositionOnTerrain();
 			BroadcastMessage("SendMoveOrderToUnit", target, SendMessageOptions.RequireReceiver);
 			playerController.currentUnit.SendMessage("HideMovementRadius", SendMessageOptions.RequireReceiver);
-			currentView = View.StartTurn;
 		}
 		
 	}
@@ -205,7 +214,6 @@ public class BattleGUI : MonoBehaviour {
 			if (target != null && target.GetComponent<UnitInfo>() != null) {
 				playerController.SendMessage("SendAttackOrderToUnit", target, SendMessageOptions.RequireReceiver);
 				playerController.currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
-				currentView = View.StartTurn;
 			} else {
 				playerController.currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
 				currentView = View.StartTurn;
