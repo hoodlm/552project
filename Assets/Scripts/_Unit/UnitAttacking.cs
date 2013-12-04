@@ -45,8 +45,11 @@ public class UnitAttacking : MonoBehaviour {
 		} else {
 			transform.LookAt(attackRequest.target.transform);
 			animation.Play("Attack");
-			// TODO: Calculate damage in a more sophisticated way
+			
 			float damage = unitInfo.attackDamage;
+			
+			damage += Random.Range(-damage / 2, damage / 2);
+			
 			attackRequest.target.BroadcastMessage("TakeDamage", damage, SendMessageOptions.RequireReceiver);
 			
 			UnitAttackResponse response = new UnitAttackResponse(request.caller, false, damage);

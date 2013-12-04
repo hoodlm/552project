@@ -36,6 +36,7 @@ public class BattleGUI : MonoBehaviour {
 	
 	private GameObject ground;
 	private AbstractController playerController;
+	private SimpleTurnScheduler turnScheduler;
 	
 	// We need state variables for keyboard presses because
 	// these are normally set on a per-frame basis,
@@ -68,6 +69,7 @@ public class BattleGUI : MonoBehaviour {
 		
 		ground = GameObject.FindWithTag("Ground");
 		playerController = this.GetComponent<PlayerController>();
+		turnScheduler = GameObject.FindWithTag("BattleManager").GetComponent<SimpleTurnScheduler>();
 	}
 	
 	// Update is called once per frame
@@ -100,7 +102,7 @@ public class BattleGUI : MonoBehaviour {
 			break;
 			
 		case View.Disabled:
-			// Display nothing
+			//
 			break;
 			
 		default:
@@ -146,6 +148,11 @@ public class BattleGUI : MonoBehaviour {
 	
 	private void WaitingForEnemyTurnGUI() {
 		GUI.Box(GUIArea, string.Empty);
+		GameObject currentUnit = turnScheduler.WhoseTurn();
+		string infoString = "";
+		if (null != currentUnit)
+			infoString = turnScheduler.WhoseTurn().GetComponent<UnitInfo>().GetInfoString();
+		GUI.Label(unitInfoArea, infoString);
 	}
 	
 	private void InitialTurnGUI() {
