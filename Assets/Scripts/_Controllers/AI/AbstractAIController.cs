@@ -6,7 +6,7 @@ using System.Collections;
 /// </summary>
 public abstract class AbstractAIController : AbstractController {
 
-	protected enum TurnPhase {WaitingTurn, MovingUnit, Attacking};
+	protected enum TurnPhase {WaitingTurn, MovingUnit, Attacking, Finish};
 	protected TurnPhase currentPhase = TurnPhase.WaitingTurn;
 	
 	// Use this for initialization
@@ -76,13 +76,30 @@ public abstract class AbstractAIController : AbstractController {
 	/// Tells the current unit to attack target.
 	/// </summary>
 	override protected void SendAttackOrderToUnit(GameObject target) {
+		string debugString = 
+		string.Format("Target for attack: {0}", target.name);
+		Debug.Log(debugString);
 		
+		UnitAttackRequest request = new UnitAttackRequest(this.gameObject, target, currentUnit);
+		
+		Debug.Log("Sending attack order to " + currentUnit.name);
+		currentUnit.SendMessage("RequestAttack", request, SendMessageOptions.RequireReceiver);
 	}
 	
 	/// <summary>
 	/// Notify this controller than the current unit has finished its current attack order.
 	/// </summary>
 	override protected void UnitDoneAttacking(UnitAttackResponse response) {
+		string debugString = 
+		string.Format ("{0} received a report that {1} finished attacking.", this.name, currentUnit.name);
+		Debug.Log(debugString);
 		
+		if (response.validAttack) {
+			hasAlreadyAttacked = true;
+		} else {
+			// TODO Report to user that the attack was illegal
+		}
+		
+		currentPhase = TurnPhase.Finish;
 	}
 }

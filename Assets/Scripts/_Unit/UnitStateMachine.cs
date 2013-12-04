@@ -10,9 +10,11 @@ public class UnitStateMachine : MonoBehaviour {
 	
 	private State currentState = State.WaitingTurn;
 	
+	private GameObject playerController;
+	
 	// Use this for initialization
 	void Start () {
-		
+		playerController = GameObject.FindGameObjectWithTag("Player");
 	}
 	
 	// Update is called once per frame
@@ -57,7 +59,7 @@ public class UnitStateMachine : MonoBehaviour {
 			
 			currentState = State.Moving;
 			BroadcastMessage("Move", request, SendMessageOptions.RequireReceiver);
-			
+			playerController.SendMessage("ChangeGUIState", "Disable");
 		} else if (currentState == State.Moving) {
 			string LogMsg = "RequestMove called on {0}, but it's already moving (called by {1})";
 			Debug.Log(string.Format(LogMsg, this.name, request.caller.name));
@@ -76,7 +78,7 @@ public class UnitStateMachine : MonoBehaviour {
 			Debug.Log (string.Format(LogMsg, this.name));
 			currentState = State.WaitingOrders;
 			response.caller.SendMessage("UnitDoneMoving", response, SendMessageOptions.RequireReceiver);
-			
+			playerController.SendMessage("ChangeGUIState", "StartTurn");
 			BroadcastMessage("HideMovementRadius", SendMessageOptions.RequireReceiver);
 		} else {
 			string LogMsg = "RequestMove unexpectedly called on {0} while it is in state \"{1}\"";
@@ -92,6 +94,7 @@ public class UnitStateMachine : MonoBehaviour {
 			
 			currentState = State.Attacking;
 			SendMessage("ExecuteAttack", request, SendMessageOptions.RequireReceiver);
+			
 		} else if (currentState == State.Attacking) {
 			string LogMsg = "RequestAttack called on {0}, but it's already moving (called by {1})";
 			Debug.Log(string.Format(LogMsg, this.name, request.attacker.name));
@@ -110,7 +113,7 @@ public class UnitStateMachine : MonoBehaviour {
 			Debug.Log (string.Format(LogMsg, this.name));
 			currentState = State.WaitingOrders;
 			response.caller.SendMessage("UnitDoneAttacking", response, SendMessageOptions.RequireReceiver);
-			
+			playerController.SendMessage("ChangeGUIState", "StartTurn");
 			BroadcastMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
 		} else {
 			string LogMsg = "DoneAttacking unexpectedly called on {0} while it is in state \"{1}\"";

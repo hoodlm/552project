@@ -22,6 +22,8 @@ public class UnitInfo : MonoBehaviour {
 	public float walkingDistance = 10f;
 	public float attackRange = 2f;
 	
+	public bool isDead = false;
+	
 	
 	// Use this for initialization
 	void Start () {
@@ -36,8 +38,8 @@ public class UnitInfo : MonoBehaviour {
 	}
 	
 	public void KillUnit() {
-		gameObject.renderer.material.color = Color.black;
-		GameObject.FindGameObjectWithTag("BattleManager").SendMessage("RemoveFromQueue", this.gameObject);
+		isDead = true;
+		animation.Play("Die");
 	}
 	
 	public void TakeDamage(float damage) {

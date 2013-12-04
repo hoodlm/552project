@@ -48,8 +48,23 @@ public class FlockingAIController : AbstractAIController {
 				
 				SendMoveOrderToUnit(GetValidTrajectoryTo(currentTarget.transform.position));
 			}
+		} else if (currentPhase == TurnPhase.Attacking && !timerRunning) {
+			currentUnit.SendMessage("ShowAttackRadius", SendMessageOptions.RequireReceiver);
+			timerRunning = true;
+			timer = thinkingTime;
 			
-		} else if (currentPhase == TurnPhase.Attacking) {
+		} else if (currentPhase == TurnPhase.Attacking && timerRunning) {
+			
+			timer -= Time.deltaTime;
+			if (timer <= 0f) {
+				timerRunning = false;
+				GameObject currentTarget = GetClosestUnitFromList(opponentUnits);
+				Debug.Log(currentUnit.name + " is going to attack " + currentTarget.name);
+				SendAttackOrderToUnit(currentTarget);
+				currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
+			}
+			
+		} else if (currentPhase == TurnPhase.Finish) {
 			currentPhase = TurnPhase.WaitingTurn;
 			currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.DontRequireReceiver);
 			GiveUpControl();
@@ -82,13 +97,16 @@ public class FlockingAIController : AbstractAIController {
 	
 	private GameObject GetClosestUnitFromList(IList<GameObject> units) {
 		float closestDistance = float.PositiveInfinity;
-		GameObject closestObject = null;
+		GameObject closestObject = this.gameObject;
 		
 		foreach(GameObject unit in units) {
 			float distance = Vector3.Distance(currentUnit.transform.position, unit.transform.position);
 			if (distance <= closestDistance) {
-				closestObject = unit;
-				closestDistance = distance;
+				if (!unit.GetComponent<UnitInfo>().isDead)
+				{
+					closestObject = unit;
+					closestDistance = distance;
+				}
 			}
 		}
 		
