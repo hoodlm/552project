@@ -52,6 +52,7 @@ public class UnitEffects : MonoBehaviour {
 	
 	public void ShowDamageEffect(int damage) {
 		GameObject dmg = Instantiate(damageTextPrefab, transform.position, Quaternion.identity) as GameObject;
+		dmg.transform.Rotate(Vector3.right, 90.0f);
 		dmg.GetComponent<TextMesh>().text = damage.ToString();
 	}
 	
