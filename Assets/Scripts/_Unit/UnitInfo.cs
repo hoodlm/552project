@@ -67,6 +67,7 @@ public class UnitInfo : MonoBehaviour {
 		StringBuilder sb = new StringBuilder();
 		sb.AppendLine(gameObject.name);
 		sb.AppendLine(string.Format("HP: {0}/{1}", currentHP, maxHP));
+		sb.AppendLine(string.Format("Attack Dmg: {0}", attackDamage));
 		
 		return sb.ToString();
 	}
