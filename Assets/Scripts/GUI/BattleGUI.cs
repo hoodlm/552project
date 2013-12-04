@@ -74,9 +74,9 @@ public class BattleGUI : MonoBehaviour {
 	void Update () {
 		// We want to get these at the beginning of the frame. Anytime OnGUI reads a true,
 		// it will clear them to false so that multiple key presses aren't recorded in a single frame.
-		moveKeyPressed = Input.GetKeyDown(KeyCode.M);
-		endTurnKeyPressed = Input.GetKeyDown(KeyCode.E);
-		attackKeyPressed = Input.GetKeyDown(KeyCode.A);
+		//moveKeyPressed = Input.GetKeyDown(KeyCode.M);
+		//endTurnKeyPressed = Input.GetKeyDown(KeyCode.E);
+		//attackKeyPressed = Input.GetKeyDown(KeyCode.A);
 	}
 	
 	void OnGUI() {

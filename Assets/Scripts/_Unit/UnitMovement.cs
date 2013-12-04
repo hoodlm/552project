@@ -64,8 +64,7 @@ public class UnitMovement : MonoBehaviour {
 		unitInfo = this.GetComponent<UnitInfo>();
 		previousPosition = transform.position;
 		rigidbody.constraints = 
-			RigidbodyConstraints.FreezePositionX |
-			RigidbodyConstraints.FreezePositionZ |
+			RigidbodyConstraints.FreezePosition |
 			RigidbodyConstraints.FreezeRotation;
 	}
 	
@@ -78,8 +77,7 @@ public class UnitMovement : MonoBehaviour {
 				stuckCounter = 0;
 				hasTarget = false;
 				rigidbody.constraints = 
-					RigidbodyConstraints.FreezePositionX |
-					RigidbodyConstraints.FreezePositionZ |
+					RigidbodyConstraints.FreezePosition |
 					RigidbodyConstraints.FreezeRotation;
 				animation.Play("Idle");
 				BroadcastMessage("DoneMoving", StuckResponse(), SendMessageOptions.RequireReceiver);
@@ -89,8 +87,7 @@ public class UnitMovement : MonoBehaviour {
 				stuckCounter = 0;
 				hasTarget = false;
 				rigidbody.constraints = 
-					RigidbodyConstraints.FreezePositionX |
-					RigidbodyConstraints.FreezePositionZ |
+					RigidbodyConstraints.FreezePosition |
 					RigidbodyConstraints.FreezeRotation;
 				animation.Play("Idle");
 				BroadcastMessage("DoneMoving", SuccessfulResponse(), SendMessageOptions.RequireReceiver);
