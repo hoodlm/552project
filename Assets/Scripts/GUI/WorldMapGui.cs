@@ -5,8 +5,38 @@ using System.Collections;
 /// Class to handle the GUI and Player I/O during pre battle phase.
 /// </summary>
 public class WorldMapGui : MonoBehaviour {
-
+	public enum WorldView {Armory, Ace, Berg, Clark, Dale, Menu};
+	
+	public WorldView currentWorldView;
 	void OnGUI () {
+		switch (currentWorldView) {
+		case WorldView.Armory:
+			Armory();
+			break;
+			
+		case WorldView.Ace:
+			AceSkillTree();
+			break;
+			
+		case WorldView.Berg:
+			BergSkillTree();
+			break;
+			
+		case WorldView.Clark:
+			ClarkSkillTree();
+			break;
+			
+		case WorldView.Dale:
+			DaleSkillTree();
+			break;
+			
+		default:
+			MenuGUI();
+			break;
+		}
+	}
+	void MenuGUI(){
+		this.currentWorldView = WorldView.Menu;
 		// Make a background box
 		//GUI.Box(new Rect(100,100,100,90), "Loader Menu");
 
@@ -27,6 +57,7 @@ public class WorldMapGui : MonoBehaviour {
 		}
 	}
 	void Armory(){
+		this.currentWorldView = WorldView.Armory;
 		if(GUI.Button(new Rect(20,40,200,20), "Ace")) {
 			AceSkillTree();
 		}
@@ -42,22 +73,34 @@ public class WorldMapGui : MonoBehaviour {
 			DaleSkillTree();
 		}
 		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
-			OnGUI();
+			MenuGUI();
 		}
 		
 	}
 	
 	void AceSkillTree(){
-		
+		this.currentWorldView = WorldView.Ace;
+		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
+			Armory();
+		}
 	}
 	void BergSkillTree(){
-		
+		this.currentWorldView = WorldView.Berg;
+		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
+			Armory();
+		}
 	}
 	void ClarkSkillTree(){
-		
+		this.currentWorldView = WorldView.Clark;
+		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
+			Armory();
+		}
 	}
 	void DaleSkillTree(){
-		
+		this.currentWorldView = WorldView.Dale;
+		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
+			Armory();
+		}
 	}
 	
 }
