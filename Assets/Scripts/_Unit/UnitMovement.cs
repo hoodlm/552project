@@ -121,7 +121,8 @@ public class UnitMovement : MonoBehaviour {
 			} else {
 				animation.Play("Walk");
 				this.hasTarget = true;
-				transform.LookAt(target);
+				//transform.LookAt(target);
+				transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 			}
 		}

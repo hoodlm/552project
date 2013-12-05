@@ -12,14 +12,14 @@ public class UnitEffects : MonoBehaviour {
 	// Movement range effect
 	public GameObject movementRadiusPrefab;
 	public Color movementRadiusColor;
-	private float movementRadiusHeight = 20.0f;
+	private float movementRadiusHeight = 10.0f;
 	private GameObject activeMovementRadiusObject;
 	private bool showingMovementRadius;
 	
 	// Attack range effect
 	public GameObject attackRadiusPrefab;
 	public Color attackRadiusColor;
-	private float attackRadiusHeight = 20.0f;
+	private float attackRadiusHeight = 10.0f;
 	private GameObject activeAttackRadiusObject;
 	private bool showingAttackRadius;
 	
@@ -83,6 +83,7 @@ public class UnitEffects : MonoBehaviour {
 	
 	public void ShowAttackRadius(float radius) {
 		if (!showingAttackRadius) {
+			radius *= 0.90f;
 			showingAttackRadius = true;
 			activeAttackRadiusObject = Instantiate(attackRadiusPrefab, transform.position, Quaternion.identity) as GameObject;
 			activeAttackRadiusObject.transform.Rotate(Vector3.left, 90f);
