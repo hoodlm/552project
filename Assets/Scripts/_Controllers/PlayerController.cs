@@ -42,6 +42,7 @@ public class PlayerController : AbstractController {
 			
 			// We allow another move request if this one was invalid.
 			// TODO: notify the user that the move was illegal.
+			player.SendMessage("ChangeGUIState", "StartTurn");
 			
 		} else {
 			hasAlreadyMoved = true;

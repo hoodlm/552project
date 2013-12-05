@@ -43,7 +43,12 @@ public class UnitAttacking : MonoBehaviour {
 			Debug.Log(debugString);
 			BroadcastMessage("DoneAttacking", OutOfRangeResponse(), SendMessageOptions.RequireReceiver);
 		} else {
-			transform.LookAt(attackRequest.target.transform);
+			transform.LookAt(
+				new Vector3(
+				attackRequest.target.transform.position.x,
+				transform.position.y,
+				attackRequest.target.transform.position.z));
+			
 			animation.Play("Attack");
 			
 			float damage = unitInfo.attackDamage;

@@ -109,7 +109,7 @@ ModelImporter:
       takeName: ArmatureAction
       firstFrame: 19
       lastFrame: 49
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
@@ -130,7 +130,7 @@ ModelImporter:
       takeName: Default Take
       firstFrame: 19
       lastFrame: 49
-      wrapMode: 0
+      wrapMode: 2
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
