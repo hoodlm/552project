@@ -32,13 +32,16 @@ public class UnitInfo : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (this.currentHP <= 0f) {
+		if (this.currentHP <= 0f && !isDead) {
 			KillUnit();
 		}
 	}
 	
 	public void KillUnit() {
 		isDead = true;
+		(this.collider as CapsuleCollider).height = 0.01f;
+		(this.collider as CapsuleCollider).radius = 0.01f;
+		(this.collider as CapsuleCollider).center = Vector3.zero;
 		animation.Play("Die");
 	}
 	

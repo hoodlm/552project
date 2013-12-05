@@ -56,10 +56,9 @@ public class UnitStateMachine : MonoBehaviour {
 	/// </summary>
 	public void RequestMove (UnitMoveRequest request) {
 		if (currentState == State.WaitingOrders) {
-			
+			playerController.SendMessage("ChangeGUIState", "WaitingForEnemyTurn");
 			currentState = State.Moving;
 			BroadcastMessage("Move", request, SendMessageOptions.RequireReceiver);
-			playerController.SendMessage("ChangeGUIState", "WaitingForEnemyTurn");
 		} else if (currentState == State.Moving) {
 			string LogMsg = "RequestMove called on {0}, but it's already moving (called by {1})";
 			Debug.Log(string.Format(LogMsg, this.name, request.caller.name));

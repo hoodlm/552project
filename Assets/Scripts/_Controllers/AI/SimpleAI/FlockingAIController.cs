@@ -62,12 +62,16 @@ public class FlockingAIController : AbstractAIController {
 				Debug.Log(currentUnit.name + " is going to attack " + currentTarget.name);
 				SendAttackOrderToUnit(currentTarget);
 				currentUnit.SendMessage("HideAttackRadius", SendMessageOptions.RequireReceiver);
+				timerRunning = true;
+				timer = thinkingTime * 4;
 			}
-			
-		} else if (currentPhase == TurnPhase.Finish) {
-			currentPhase = TurnPhase.WaitingTurn;
-			currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.DontRequireReceiver);
-			GiveUpControl();
+		} else if (currentPhase == TurnPhase.Finish && timerRunning) {
+			timer -= Time.deltaTime;
+			if (timer <= 0f) {
+				currentPhase = TurnPhase.WaitingTurn;
+				currentUnit.SendMessage("HideActiveUnit", SendMessageOptions.DontRequireReceiver);
+				GiveUpControl();
+			}
 		}
 	}
 	

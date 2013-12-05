@@ -9,6 +9,8 @@ using System.Collections.Generic;
 /// </summary>
 public class UnitMovement : MonoBehaviour {
 	
+	private GameObject playerController;
+	
 	/// <summary>
 	/// The speed at which this unit will walk to a target point.
 	/// </summary>
@@ -52,6 +54,8 @@ public class UnitMovement : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		playerController = GameObject.FindGameObjectWithTag("Player");
+		
 		animation.Play("Idle");
 		animation["Idle"].speed = 0.70f;
 		if (Random.Range(0,2) == 0) {
@@ -70,6 +74,7 @@ public class UnitMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		rigidbody.AddForce(Vector3.down * Time.deltaTime * 100f);
 		if (hasTarget) {
 			MoveTowardsWaypoint(target);
 			if (UnitIsStuck()) {
@@ -117,10 +122,12 @@ public class UnitMovement : MonoBehaviour {
 						unitInfo.CalculateWalkingDistance());
 				Debug.Log(debugString);
 				BroadcastMessage("DoneMoving", OutOfRangeResponse(), SendMessageOptions.RequireReceiver);
+				playerController.SendMessage("ChangeGUIState", "StartTurn");
 			} else {
 				animation.Play("Walk");
 				this.hasTarget = true;
-				transform.LookAt(target);
+				//transform.LookAt(target);
+				transform.LookAt(new Vector3(target.x, transform.position.y, target.z));
 				rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 			}
 		}

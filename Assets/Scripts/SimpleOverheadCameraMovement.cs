@@ -47,10 +47,10 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 	private void MoveCameraTowardTarget() {
 		Vector3 trajectory = autoMoveTarget - this.transform.position;
 		
-		if (trajectory.sqrMagnitude <= 1.0f) {
+		if (trajectory.sqrMagnitude <= autoMoveSpeed * autoMoveSpeed) {
 			cameraIsAutoMoving = false;
 		} else {
-			MoveCamera(trajectory.normalized * autoMoveSpeed * Time.deltaTime);
+			MoveCamera(trajectory.normalized * autoMoveSpeed * Time.deltaTime * (transform.position.y + 50));
 		}
 	}
 	
@@ -68,12 +68,12 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		Vector3 drag = CalculateDrag();
 		
 		currentVelocity += acceleration * Time.deltaTime;
-		float maxVelSqr = maxMoveSpeed * maxMoveSpeed * transform.position.y * transform.position.y;
+		float maxVelSqr = maxMoveSpeed * maxMoveSpeed * transform.position.y * (transform.position.y + 50);
 		
 		if (acceleration.Equals(Vector3.zero)) {
 			currentVelocity += drag * Time.deltaTime;
 		} else if (currentVelocity.sqrMagnitude >= maxVelSqr) {
-			currentVelocity = currentVelocity.normalized * maxMoveSpeed * transform.position.y;
+			currentVelocity = currentVelocity.normalized * maxMoveSpeed * (transform.position.y + 50);
 		}
 		
 		MoveCamera(currentVelocity * Time.deltaTime);
@@ -87,7 +87,7 @@ public class SimpleOverheadCameraMovement : MonoBehaviour {
 		localAcceleration = localAcceleration.normalized * maxAcceleration;
 		
 		// Also scale acceleration with zoom height
-		localAcceleration *= transform.position.y;
+		localAcceleration *= (transform.position.y + 50);
 		
 		return localAcceleration;
 	}

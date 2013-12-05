@@ -25,7 +25,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	/// <summary>
 	/// We wait a few seconds before we start, to make sure all initialization is done.
 	/// </summary>
-	private float startTimer = 0.5f;
+	private float startTime = 0.5f;
 	
 	// Use this for initialization
 	void Start () {
@@ -38,7 +38,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (turnCounter < 0 && Time.timeSinceLevelLoad > startTimer) {
+		if (turnCounter < 0 && Time.timeSinceLevelLoad > startTime) {
 			NextTurn();
 		}
 		
@@ -67,7 +67,7 @@ public class SimpleTurnScheduler : MonoBehaviour {
 			} while (units[turnCounter].GetComponent<UnitInfo>().isDead);
 			GameObject unit = units[turnCounter];
 			controllers[unit].TakeControlOf(unit);
-		}
+		}  
 	}
 	
 	/// <summary>
