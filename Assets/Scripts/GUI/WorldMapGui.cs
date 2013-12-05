@@ -77,7 +77,7 @@ public class WorldMapGui : MonoBehaviour {
 		}
 		
 	}
-	
+	//add a box with gui text explaining the characters strengths and weaknesses
 	void AceSkillTree(){
 		this.currentWorldView = WorldView.Ace;
 		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
