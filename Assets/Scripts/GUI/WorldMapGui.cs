@@ -80,24 +80,29 @@ public class WorldMapGui : MonoBehaviour {
 	//add a box with gui text explaining the characters strengths and weaknesses
 	void AceSkillTree(){
 		this.currentWorldView = WorldView.Ace;
+		GUI.Box(new Rect(0,10,250,90), "A fast, high damage striker. " + "\n"+
+		 	"Great for taking out enimies," +"\n"+"but suffers from glass canon syndrome.");
 		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
 			Armory();
 		}
 	}
 	void BergSkillTree(){
 		this.currentWorldView = WorldView.Berg;
+		GUI.Box(new Rect(0,10,250,90), "Great at taking a hit. \n Your go to tank.");
 		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
 			Armory();
 		}
 	}
 	void ClarkSkillTree(){
 		this.currentWorldView = WorldView.Clark;
+		GUI.Box(new Rect(0,10,250,90), "Well rounded fighter. \n Can both dish out and absorb damage.");
 		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
 			Armory();
 		}
 	}
 	void DaleSkillTree(){
 		this.currentWorldView = WorldView.Dale;
+		GUI.Box(new Rect(0,10,250,90), "Jack of all trades.  \n  Good blend of mobility and durability");
 		if (GUI.Button (new Rect (20,Screen.height - 50,200,50), "Back")){
 			Armory();
 		}
